@@ -22,3 +22,10 @@ Il fonctionne dans n'importe quel navigateur (ordinateur, tablette, téléphone)
 **Tout réviser** : Vrai ou faux, fiches de révision, et une évaluation blanche notée sur 20.
 
 Les étoiles gagnées et le prénom sont gardés dans le navigateur.
+
+## Évaluation à imprimer
+
+Dossier `evaluation/` :
+- `evaluation-sujet.pdf` : le sujet pour l'élève (3 pages A4, noté sur 20, avec la grille de compétences)
+- `evaluation-corrige.pdf` : le corrigé et le barème pour l'enseignant (3 pages A4), séparé du sujet
+- les versions `.html` des deux documents et `generer.py`, le script qui les produit
