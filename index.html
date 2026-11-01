@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- ARTIFACT-START -->
+<title>Mission Volcans</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Lilita+One&display=swap">
+<style>
+/* Mise en page : une feuille de cahier Seyès, une colonne de « fiches » posées dessus, le magma comme seule couleur vive. */
+:root {
+  --bg: #eef3f8;
+  --paper: #ffffff;
+  --ink: #1f2635;
+  --muted: #5b6579;
+  --rule: #cfdaea;
+  --line: #d9e3f2;
+  --line-strong: #c3d2ea;
+  --magma: #e2512a;
+  --magma-dark: #b33a18;
+  --lava: #f4a51c;
+  --basalt: #33405a;
+  --ok: #23925a;
+  --ok-soft: #dff3e8;
+  --bad: #cf2e3e;
+  --bad-soft: #fbe2e5;
+  --info-soft: #e5edfb;
+  --blank: #fff3dc;
+  --font-display: "Lilita One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Andika", "Verdana", "Segoe UI", system-ui, sans-serif;
+  --radius: 16px;
+  /* couleurs fixes des dessins scientifiques */
+  --crust: #8b5a36;
+  --mantle: #f08a3c;
+  --mantle-2: #e9672d;
+  --core: #ffd34d;
+  --core-2: #f6a623;
+  --rock: #6b5446;
+  --rock-dark: #4b3a30;
+  --strata-1: #c9a77c;
+  --strata-2: #b48e63;
+  --strata-3: #9e7a52;
+  --ash: #9aa0aa;
+  --ash-2: #b9bec6;
+  --mark-bg: #ffffff;
+  --mark-ink: #1f2635;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131823; --paper: #1d2433; --ink: #eef1f7; --muted: #a6b0c3; --rule: #34405a;
+    --line: #1a2130; --line-strong: #212a3c; --magma: #ff7148; --magma-dark: #c94a24; --lava: #ffc14d;
+    --basalt: #c8d2e4; --ok: #4cc785; --ok-soft: #173a29; --bad: #ff6b7a; --bad-soft: #43202a;
+    --info-soft: #222f4a; --blank: #3a2f1c; --ash: #7d838e; --ash-2: #969ca6; --mark-bg: #1d2433; --mark-ink: #eef1f7;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131823; --paper: #1d2433; --ink: #eef1f7; --muted: #a6b0c3; --rule: #34405a;
+  --line: #1a2130; --line-strong: #212a3c; --magma: #ff7148; --magma-dark: #c94a24; --lava: #ffc14d;
+  --basalt: #c8d2e4; --ok: #4cc785; --ok-soft: #173a29; --bad: #ff6b7a; --bad-soft: #43202a;
+  --info-soft: #222f4a; --blank: #3a2f1c; --ash: #7d838e; --ash-2: #969ca6; --mark-bg: #1d2433; --mark-ink: #eef1f7;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background-color: var(--bg);
+  background-image:
+    repeating-linear-gradient(to bottom, transparent 0 31px, var(--line-strong) 31px 32px),
+    repeating-linear-gradient(to bottom, transparent 0 7px, var(--line) 7px 8px);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; margin: 0; letter-spacing: .01em; }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--lava); outline-offset: 2px; }
+
+.card { background: var(--paper); border: 2px solid var(--rule); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+/* Accueil */
+.hero { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; }
+.hero .eyebrow { font-size: .85rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); font-weight: 700; }
+.hero h1 { font-size: clamp(2.3rem, 9vw, 3.6rem); line-height: 1; color: var(--magma); }
+.hero h1 span { color: var(--ink); display: block; font-size: .55em; margin-top: 4px; }
+.hero svg { width: clamp(90px, 24vw, 140px); height: auto; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.name-field { display: flex; align-items: center; gap: 8px; flex: 1 1 220px; }
+.name-field label { font-weight: 700; white-space: nowrap; }
+.name-field input { flex: 1; min-width: 0; font: inherit; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--rule); background: var(--paper); color: var(--ink); }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; border: 2px solid var(--rule); background: var(--paper); font-weight: 700; }
+.pill .star { color: var(--lava); }
+
+.section-title { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.section-title h2 { font-size: 1.5rem; }
+.section-title small { color: var(--muted); font-size: .95rem; }
+.missions { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.mission {
+  text-align: left; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center;
+  padding: 14px; border-radius: var(--radius); background: var(--paper); border: 2px solid var(--rule);
+  box-shadow: 0 4px 0 var(--rule); transition: transform .12s, box-shadow .12s;
+}
+.mission:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--rule); }
+.mission:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--rule); }
+.mission .num { grid-row: span 3; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 1.35rem; color: #fff; background: var(--magma); }
+.mission .t { font-weight: 700; line-height: 1.2; }
+.mission .s { color: var(--muted); font-size: .9rem; line-height: 1.25; }
+.stars { color: var(--rule); letter-spacing: 2px; font-size: 1.05rem; }
+.stars .on { color: var(--lava); }
+.mission.big { grid-column: 1 / -1; background: var(--basalt); border-color: var(--basalt); color: var(--paper); box-shadow: 0 4px 0 var(--magma-dark); }
+.mission.big .s { color: var(--paper); opacity: .85; }
+.mission.big .num { background: var(--lava); color: #2a1d05; }
+.mission.big .stars { color: color-mix(in srgb, var(--paper) 35%, transparent); }
+.mission.big .stars .on { color: var(--lava); }
+
+/* Écran de jeu */
+.topbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.back { border: 2px solid var(--rule); background: var(--paper); border-radius: 12px; padding: 6px 12px; font-weight: 700; }
+.topbar h1 { font-size: 1.6rem; flex: 1 1 200px; }
+.progress { height: 12px; border-radius: 999px; background: var(--paper); border: 2px solid var(--rule); overflow: hidden; }
+.progress > div { height: 100%; background: linear-gradient(90deg, var(--lava), var(--magma)); transition: width .3s; }
+.qnum { color: var(--muted); font-weight: 700; font-size: .9rem; text-transform: uppercase; letter-spacing: .08em; }
+.qtext { font-family: var(--font-body); font-weight: 700; font-size: 1.3rem; line-height: 1.35; }
+.choices { display: grid; gap: 10px; }
+.choices.vf { grid-template-columns: 1fr 1fr; }
+.choice { text-align: left; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--rule); background: var(--paper); font-size: 1.08rem; line-height: 1.3; box-shadow: 0 3px 0 var(--rule); }
+.choices.vf .choice { text-align: center; font-family: var(--font-display); font-size: 1.5rem; padding: 18px; }
+.choice:hover:not(:disabled) { border-color: var(--magma); }
+.choice:disabled { cursor: default; }
+.choice.ok { background: var(--ok-soft); border-color: var(--ok); box-shadow: 0 3px 0 var(--ok); }
+.choice.bad { background: var(--bad-soft); border-color: var(--bad); box-shadow: 0 3px 0 var(--bad); }
+.feedback { border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.feedback.ok { background: var(--ok-soft); }
+.feedback.bad { background: var(--bad-soft); }
+.feedback strong.head { font-family: var(--font-display); font-weight: 400; font-size: 1.4rem; }
+.feedback.ok strong.head { color: var(--ok); }
+.feedback.bad strong.head { color: var(--bad); }
+
+.btn { border: 0; border-radius: 14px; padding: 12px 20px; font-family: var(--font-display); font-size: 1.25rem; letter-spacing: .02em; background: var(--magma); color: #fff; box-shadow: 0 4px 0 var(--magma-dark); align-self: flex-start; }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--magma-dark); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn.alt { background: var(--paper); color: var(--ink); border: 2px solid var(--rule); box-shadow: 0 4px 0 var(--rule); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.hint { color: var(--muted); font-size: .95rem; }
+.note { background: var(--info-soft); border-radius: 12px; padding: 12px 14px; font-size: .98rem; }
+
+/* Textes à trous et légendes */
+.text-holes { font-size: 1.12rem; line-height: 2.3; }
+.blank {
+  display: inline-block; min-width: 5.5em; padding: 0 10px; margin: 0 2px; line-height: 1.6;
+  border: 0; border-bottom: 3px dashed var(--magma); background: var(--blank); border-radius: 8px 8px 0 0;
+  font-weight: 700; color: var(--ink); vertical-align: baseline;
+}
+.blank.empty { color: var(--muted); font-weight: 400; }
+.blank.active { outline: 3px solid var(--lava); outline-offset: 1px; }
+.blank.right { background: var(--ok-soft); border-bottom: 3px solid var(--ok); color: var(--ok); cursor: default; }
+.blank.wrong { animation: shake .4s; background: var(--bad-soft); border-bottom-color: var(--bad); }
+.blank.revealed { background: var(--info-soft); border-bottom: 3px solid var(--basalt); cursor: default; }
+.bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border-radius: 14px; background: var(--bg); border: 2px dashed var(--rule); }
+.chip { padding: 6px 14px; border-radius: 999px; border: 2px solid var(--basalt); background: var(--paper); font-weight: 700; box-shadow: 0 3px 0 var(--rule); }
+.chip:hover { border-color: var(--magma); }
+.legend-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.legend-list li { display: flex; align-items: center; gap: 10px; }
+.legend-list .n { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-family: var(--font-display); }
+.legend-list .blank { flex: 1; text-align: left; min-width: 0; }
+.diagram-row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; align-items: center; }
+@media (max-width: 600px) { .diagram-row { grid-template-columns: 1fr; } }
+.diagram { width: 100%; max-width: 420px; height: auto; margin: 0 auto; display: block; }
+.diagram text, .plates-svg text { font-family: var(--font-display); }
+
+/* Relie */
+.match { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 10px 16px; }
+.match .col { display: flex; flex-direction: column; gap: 10px; }
+.mitem { text-align: left; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--rule); background: var(--paper); line-height: 1.3; position: relative; box-shadow: 0 3px 0 var(--rule); display: flex; align-items: center; gap: 10px; min-height: 64px; }
+.mitem .dot { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px dashed var(--rule); }
+.mitem.sel { outline: 3px solid var(--lava); }
+.mitem.wrong { animation: shake .4s; border-color: var(--bad); }
+.mitem.right { border-color: var(--ok); }
+
+/* Ordre */
+.order-done { display: flex; flex-direction: column; gap: 8px; counter-reset: step; padding: 0; margin: 0; list-style: none; }
+.order-done li { counter-increment: step; display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--ok-soft); border: 2px solid var(--ok); }
+.order-done li::before { content: counter(step); flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--ok); color: var(--paper); font-family: var(--font-display); }
+.order-pool { display: grid; gap: 10px; }
+.ocard { text-align: left; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--rule); background: var(--paper); box-shadow: 0 3px 0 var(--rule); line-height: 1.3; }
+.ocard.wrong { animation: shake .4s; border-color: var(--bad); background: var(--bad-soft); }
+
+/* Plaques */
+.plates-svg { width: 100%; height: auto; display: block; border-radius: 12px; background: var(--info-soft); }
+.plate, .slab, .mountain, .rise { transition: transform 1.2s ease-in-out, opacity .8s; transform-box: fill-box; }
+.mountain { transform-origin: 50% 100%; transform: scaleY(.12); }
+.rise { transform-origin: 50% 100%; transform: scaleY(0); }
+.slab { opacity: 0; }
+.scene-collide .plate-a { transform: translateX(22px); }
+.scene-collide .plate-b { transform: translateX(-22px); }
+.scene-collide .slab { opacity: 1; transform: translateX(22px); }
+.scene-collide .mountain { transform: translateX(-22px) scaleY(1); }
+.scene-collide .quake { animation: quake .25s 1.1s 4; }
+.scene-apart .plate-a { transform: translateX(-26px); }
+.scene-apart .plate-b, .scene-apart .mountain { transform: translateX(26px) scaleY(.12); }
+.scene-apart .plate-b { transform: translateX(26px); }
+.scene-apart .rise { transform: scaleY(1); }
+.scene-label { font-family: var(--font-display); font-size: 1.15rem; min-height: 1.6em; color: var(--magma); }
+
+/* Terre interactive */
+.layer { cursor: pointer; transition: filter .2s; }
+.layer:hover, .layer.sel { filter: brightness(1.12) drop-shadow(0 0 4px rgba(0,0,0,.35)); }
+.layer-info { min-height: 140px; }
+.layer-info h3 { font-size: 1.4rem; color: var(--magma); }
+.seen-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.seen { padding: 4px 10px; border-radius: 999px; border: 2px solid var(--rule); font-size: .9rem; color: var(--muted); }
+.seen.on { border-color: var(--ok); color: var(--ok); background: var(--ok-soft); font-weight: 700; }
+
+/* Résultats */
+.result { align-items: center; text-align: center; }
+.result .big-stars { font-size: 3rem; letter-spacing: 6px; color: var(--rule); line-height: 1; }
+.result .big-stars .on { color: var(--lava); display: inline-block; animation: pop .5s backwards; }
+.result .big-stars .on:nth-child(2) { animation-delay: .15s; }
+.result .big-stars .on:nth-child(3) { animation-delay: .3s; }
+.result h2 { font-size: 2rem; }
+.result .score { font-size: 1.2rem; font-weight: 700; }
+.result .grade { font-family: var(--font-display); font-size: 3.2rem; color: var(--magma); line-height: 1; font-variant-numeric: tabular-nums; }
+.review { text-align: left; width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.review h3 { font-size: 1.3rem; }
+.review .item { border-left: 5px solid var(--bad); background: var(--bg); border-radius: 0 12px 12px 0; padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; }
+.review .item .good { color: var(--ok); font-weight: 700; }
+.result .row { justify-content: center; }
+
+/* Fiches */
+.fiche h2 { color: var(--magma); font-size: 1.6rem; }
+.fiche .label { text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; color: var(--muted); font-weight: 700; }
+.fiche p { line-height: 1.7; }
+.fiche mark { background: var(--blank); color: var(--ink); padding: 0 4px; border-radius: 4px; font-weight: 700; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.fact { background: var(--bg); border-radius: 12px; padding: 10px 12px; }
+.fact b { font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; color: var(--magma); display: block; font-variant-numeric: tabular-nums; }
+
+.footer { color: var(--muted); font-size: .85rem; text-align: center; }
+.icon-btn { border: 2px solid var(--rule); background: var(--paper); border-radius: 999px; padding: 8px 14px; font-weight: 700; }
+
+@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@keyframes pop { from { transform: scale(0); } 70% { transform: scale(1.3); } to { transform: scale(1); } }
+@keyframes quake { 0%,100% { transform: translate(0,0); } 25% { transform: translate(-3px,1px); } 75% { transform: translate(3px,-1px); } }
+@keyframes puff { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.puff { animation: puff 3s ease-in-out infinite; transform-box: fill-box; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media (max-width: 480px) {
+  body { font-size: 17px; }
+  .card { padding: 16px; }
+  .match { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mitem { padding: 10px; font-size: .95rem; }
+  .text-holes { font-size: 1.05rem; }
+}
+</style>
+
+<div class="wrap" id="app" aria-live="polite"></div>
+
+<script>
+(function () {
+"use strict";
+
+/* ---------- Petits outils ---------- */
+var app = document.getElementById("app");
+function $all(sel, el) { return Array.prototype.slice.call((el || app).querySelectorAll(sel)); }
+function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function pick(list, n) { return shuffle(list.slice()).slice(0, n); }
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+var store = {
+  get: function (k, d) { try { var v = localStorage.getItem("mission-volcans:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set: function (k, v) { try { localStorage.setItem("mission-volcans:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+var progress = store.get("progress", {});
+var soundOn = store.get("sound", true);
+var playerName = store.get("name", "");
+
+var actx = null;
+function sound(ok) {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    var notes = ok ? [523, 659, 784] : [233, 196];
+    notes.forEach(function (f, i) {
+      var t = actx.currentTime + i * 0.1;
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = ok ? "triangle" : "square";
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(ok ? 0.18 : 0.06, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+      o.connect(g); g.connect(actx.destination);
+      o.start(t); o.stop(t + 0.18);
+    });
+  } catch (e) {}
+}
+function who() { return playerName ? " " + esc(playerName) : ""; }
+
+/* ---------- Les contenus (tirés des fiches de la classe) ---------- */
+/* Dans chaque question, la bonne réponse est toujours la première de la liste c. */
+var DEF = [
+  { q: "Je me trouve dans la partie centrale de la Terre et je suis composé surtout de fer. Qui suis-je ?", c: ["Le noyau", "Le manteau", "La croûte terrestre", "Le cratère"], why: "Au centre de la Terre se trouve un gros noyau formé surtout de fer." },
+  { q: "Je suis la « peau » de la Terre, faite de roches solides. Qui suis-je ?", c: ["La croûte terrestre", "Le noyau", "Le manteau", "La lave"], why: "La croûte terrestre est la « peau » : elle est faite de roches solides." },
+  { q: "Je suis la « chair » de la Terre, composée de roches très chaudes et comprimées. Qui suis-je ?", c: ["Le manteau", "La croûte terrestre", "Le noyau", "Le nuage de cendres"], why: "Le manteau, c’est la « chair » de la pêche : des roches très chaudes et comprimées." },
+  { q: "Je suis ronde et ma structure peut être comparée à celle d’une pêche. Qui suis-je ?", c: ["La Terre", "La Lune", "Le noyau", "Le volcan"], why: "La Terre est pratiquement ronde, et on compare sa structure à celle d’une pêche." },
+  { q: "Je suis le trou au sommet du volcan. Qui suis-je ?", c: ["Le cratère", "La cheminée", "Le magma", "Le noyau"], why: "Un volcan est une montagne dont le sommet comporte un cratère." },
+  { q: "Je suis la fissure de la croûte terrestre par laquelle le magma remonte. Qui suis-je ?", c: ["La cheminée", "Le cratère", "Le manteau", "La plaque"], why: "Le volcan est formé autour d’une fissure : la cheminée." },
+  { q: "Je suis faite de roches très chaudes et partiellement fondues, sous le volcan. Qui suis-je ?", c: ["Le magma", "La lave", "La croûte terrestre", "La cendre"], why: "Le magma, ce sont des roches très chaudes et partiellement fondues présentes dans le sous-sol." },
+  { q: "Je suis le magma quand il est sorti à la surface. Qui suis-je ?", c: ["La lave", "Le noyau", "Le cratère", "La cheminée"], why: "Quand le magma est éjecté en surface, il prend le nom de lave." },
+  { q: "Je suis le grand nuage gris qui sort du volcan pendant l’éruption. Qui suis-je ?", c: ["Le nuage de cendres", "Un nuage de pluie", "Le magma", "La cheminée"], why: "Pendant l’éruption, on voit de la lave et un nuage de cendres." },
+  { q: "Nous formons la croûte terrestre et nous « flottons » sur le manteau. Qui sommes-nous ?", c: ["Les grandes plaques", "Les volcans", "Les noyaux", "Les nuages"], why: "La croûte terrestre est constituée de grandes plaques qui « flottent » sur le manteau." }
+];
+
+var TERRE = [
+  { q: "À quel fruit compare-t-on la structure de la Terre ?", c: ["À une pêche", "À une banane", "À une fraise", "À une pastèque"], why: "La peau = la croûte, la chair = le manteau, le noyau = le noyau !" },
+  { q: "Quelle est l’épaisseur de la croûte terrestre ?", c: ["De 6 à 70 km", "Environ 2800 km", "Environ 6400 km", "1 mètre"], why: "La croûte terrestre est épaisse de 6 à 70 km selon les endroits." },
+  { q: "Quelle est l’épaisseur du manteau ?", c: ["Environ 2800 km", "De 6 à 70 km", "Environ 6400 km", "Environ 10 km"], why: "Le manteau s’étend sur environ 2800 km d’épaisseur." },
+  { q: "Combien mesure le rayon de la Terre ?", c: ["Environ 6400 km", "Environ 2800 km", "Environ 70 km", "Environ 100 km"], why: "Le rayon de la Terre mesure environ 6400 km." },
+  { q: "De quoi le noyau est-il surtout formé ?", c: ["De fer", "D’eau", "De glace", "De sable"], why: "Le noyau est formé surtout de fer." },
+  { q: "Comment sont les roches du manteau ?", c: ["Très chaudes et comprimées", "Froides et légères", "Liquides comme de l’eau", "Gelées"], why: "Le manteau est composé de roches très chaudes et comprimées." },
+  { q: "Par rapport au rayon de la Terre, la croûte terrestre est…", c: ["Très mince", "Très épaisse", "Aussi grande que le rayon", "Plus grande que le rayon"], why: "6 à 70 km, c’est très mince comparé aux 6400 km du rayon." },
+  { q: "De l’extérieur vers le centre, dans quel ordre trouve-t-on les couches ?", c: ["Croûte → manteau → noyau", "Noyau → manteau → croûte", "Manteau → croûte → noyau", "Croûte → noyau → manteau"], why: "On traverse d’abord la croûte, puis le manteau, et on arrive au noyau." },
+  { q: "Comment sont les roches de la croûte terrestre ?", c: ["Solides", "Fondues", "Liquides", "Gazeuses"], why: "La croûte terrestre est faite de roches solides." }
+];
+
+var PLAQUES = [
+  { q: "De quoi est constituée la croûte terrestre ?", c: ["De grandes plaques", "D’un seul gros bloc", "D’eau", "De fer"], why: "La croûte terrestre est constituée de grandes plaques (les plaques tectoniques)." },
+  { q: "Sur quoi les plaques « flottent »-elles ?", c: ["Sur le manteau", "Sur le noyau", "Sur la mer", "Sur l’air"], why: "Les plaques « flottent » sur le manteau." },
+  { q: "À quelle vitesse les plaques se déplacent-elles ?", c: ["De quelques centimètres par an", "De quelques kilomètres par jour", "Elles ne bougent jamais", "De 100 km par heure"], why: "Elles se déplacent lentement, de quelques centimètres par an." },
+  { q: "Que peuvent faire deux plaques ?", c: ["S’écarter, ou se heurter et se chevaucher", "Fondre et disparaître", "S’envoler", "Se transformer en eau"], why: "Selon le cas, les plaques peuvent s’écarter, ou se heurter et se chevaucher." },
+  { q: "Deux plaques se rencontrent et l’une passe sous l’autre. Que se forme-t-il ?", c: ["Des montagnes", "Des lacs", "Des forêts", "Des déserts"], why: "La bordure de la plaque du dessus est soulevée, fissurée et plissée : des montagnes naissent." },
+  { q: "Quelles montagnes se sont formées ainsi ?", c: ["L’Himalaya et la cordillère des Andes", "Le Sahara et le Nil", "La Seine et la Loire", "La Lune et Mars"], why: "L’Himalaya (au nord de l’Inde) et les Andes (en Amérique du Sud) sont nées de plaques qui se rencontrent." },
+  { q: "Où se trouve la chaîne de l’Himalaya ?", c: ["Au nord de l’Inde", "En Amérique du Sud", "En France", "En Antarctique"], why: "L’Himalaya se trouve au nord de l’Inde." },
+  { q: "Où se trouve la cordillère des Andes ?", c: ["En Amérique du Sud", "Au nord de l’Inde", "En Afrique", "En Australie"], why: "La cordillère des Andes est en Amérique du Sud." },
+  { q: "Vers le bord des plaques, que provoquent leurs mouvements ?", c: ["Des secousses et des fissures", "De la neige", "Des arcs-en-ciel", "Des marées"], why: "Leurs mouvements engendrent des secousses (tremblements de terre) et des fissures, à l’origine du volcanisme." },
+  { q: "Comment appelle-t-on les secousses de la croûte terrestre ?", c: ["Des tremblements de terre", "Des éruptions", "Des orages", "Des marées"], why: "Les secousses du sol sont des tremblements de terre." },
+  { q: "Pourquoi dit-on que la Terre est une planète active ?", c: ["Ses plaques bougent : séismes, montagnes, volcans", "Elle a beaucoup d’habitants", "Il y a des nuages", "Elle est ronde"], why: "Tous ces phénomènes (plaques qui bougent, séismes, volcans) font de la Terre une planète active." }
+];
+
+var VOLCAN = [
+  { q: "À quoi ressemble un volcan ?", c: ["À une montagne avec un cratère au sommet", "À un trou dans la mer", "À une colline toute plate", "À un lac de feu"], why: "Un volcan se présente sous l’aspect d’une montagne dont le sommet comporte un cratère." },
+  { q: "Autour de quoi un volcan est-il formé ?", c: ["D’une fissure de la croûte terrestre", "D’un arbre", "D’une rivière", "Du noyau de la Terre"], why: "Il est formé autour d’une fissure de la croûte terrestre : la cheminée." },
+  { q: "Qu’est-ce que le magma ?", c: ["Des roches très chaudes et partiellement fondues", "De l’eau bouillante", "De la fumée", "Du sable chaud"], why: "Le magma : des roches très chaudes et partiellement fondues du sous-sol." },
+  { q: "Quand une éruption volcanique a-t-elle lieu ?", c: ["Quand le magma est éjecté en surface", "Quand il pleut beaucoup", "Quand il fait très chaud l’été", "Quand la neige fond"], why: "Une éruption a lieu lorsque le magma est éjecté en surface." },
+  { q: "Comment s’appelle le magma arrivé à la surface ?", c: ["La lave", "Le noyau", "La croûte", "Le cratère"], why: "En surface, le magma prend le nom de lave." },
+  { q: "Que devient la lave en refroidissant ?", c: ["De la roche solide", "De l’eau", "Du sable fin", "De la fumée"], why: "En refroidissant, la lave devient de la roche solide." },
+  { q: "Où se trouvent beaucoup de volcans ?", c: ["À la limite des grandes plaques", "Au centre du noyau", "Uniquement en France", "Au milieu des villes"], why: "Beaucoup de volcans sont situés à la limite des grandes plaques de la croûte terrestre." },
+  { q: "Par où le magma remonte-t-il ?", c: ["Par la cheminée", "Par le nuage de cendres", "Par les anciennes coulées", "Par le noyau"], why: "Le magma remonte par la cheminée jusqu’au cratère." },
+  { q: "Que voit-on sortir du volcan pendant une éruption ?", c: ["De la lave et un nuage de cendres", "De l’eau et de la neige", "Du fer du noyau", "Des nuages de pluie"], why: "Lors d’une éruption, la lave et un nuage de cendres apparaissent." }
+];
+
+var VF = [
+  { q: "La croûte terrestre est faite de roches solides.", v: true, why: "Oui, la croûte est faite de roches solides." },
+  { q: "Le noyau est formé surtout de fer.", v: true, why: "Oui, le noyau est surtout formé de fer." },
+  { q: "Le manteau mesure environ 6400 km d’épaisseur.", v: false, why: "Non : le manteau fait environ 2800 km. 6400 km, c’est le rayon de la Terre." },
+  { q: "La croûte terrestre est très épaisse par rapport au rayon de la Terre.", v: false, why: "Non : elle est très mince (6 à 70 km pour un rayon de 6400 km)." },
+  { q: "Les plaques se déplacent de quelques centimètres par an.", v: true, why: "Oui, elles se déplacent lentement, de quelques centimètres par an." },
+  { q: "Les plaques de la croûte terrestre ne bougent jamais.", v: false, why: "Non : elles bougent lentement, c’est pour ça que la Terre est une planète active." },
+  { q: "Quand deux plaques se rencontrent, des montagnes peuvent se former.", v: true, why: "Oui, comme l’Himalaya et la cordillère des Andes." },
+  { q: "La chaîne de l’Himalaya se trouve en Amérique du Sud.", v: false, why: "Non : l’Himalaya est au nord de l’Inde. Ce sont les Andes qui sont en Amérique du Sud." },
+  { q: "Les mouvements des plaques provoquent des tremblements de terre.", v: true, why: "Oui, vers le bord des plaques, leurs mouvements provoquent des secousses." },
+  { q: "Un volcan a un cratère à son sommet.", v: true, why: "Oui, c’est une montagne avec un cratère au sommet." },
+  { q: "Sous la terre on dit « magma » ; à la surface on dit « lave ».", v: true, why: "Oui, le magma prend le nom de lave quand il est éjecté en surface." },
+  { q: "La lave reste liquide pour toujours.", v: false, why: "Non : en refroidissant, la lave devient de la roche solide." },
+  { q: "Un volcan grandit comme une colline, grâce à la pluie.", v: false, why: "Non : un volcan se forme autour d’une fissure par laquelle le magma remonte. La pluie n’y est pour rien." },
+  { q: "Beaucoup de volcans sont situés à la limite des grandes plaques.", v: true, why: "Oui, là où la croûte est fissurée par les mouvements des plaques." },
+  { q: "Le magma remonte par la cheminée.", v: true, why: "Oui, la cheminée est la fissure par laquelle le magma remonte." },
+  { q: "Les roches du manteau sont froides.", v: false, why: "Non : les roches du manteau sont très chaudes et comprimées." },
+  { q: "La Terre est pratiquement ronde.", v: true, why: "Oui, la Terre est pratiquement ronde." },
+  { q: "Le cratère est au pied du volcan.", v: false, why: "Non : le cratère est au sommet du volcan." }
+];
+var VF_Q = VF.map(function (it) { return { q: it.q, c: it.v ? ["Vrai", "Faux"] : ["Faux", "Vrai"], why: it.why, vf: true }; });
+
+var LECON1A = [
+  "La ", { a: "croûte" }, " terrestre est faite de roches ", { a: "solides" }, ". Épaisse de 6 à 70 km, elle est très ",
+  { a: "mince" }, " par rapport au ", { a: "rayon" }, " de la Terre qui mesure environ 6400 km. Le ", { a: "manteau" },
+  " est composé de roches très ", { a: "chaudes" }, " et ", { a: "comprimées" }, ". Il s’étend sur environ 2800 km d’épaisseur. Au centre, se trouve un gros ",
+  { a: "noyau" }, " formé surtout de ", { a: "fer" }, "."
+];
+var LECON1B = [
+  "De grandes plaques sur le manteau se déplacent ", { a: "lentement" }, ", de quelques ", { a: "centimètres" },
+  " par an. Selon le cas, ces plaques peuvent s’", { a: "entrechoquer" }, " ou se ", { a: "chevaucher" }, " et s’", { a: "écarter" },
+  ". Quand deux plaques se ", { a: "rencontrent" }, " et que l’une passe ", { a: "sous" }, " l’autre, cela donne naissance à des ",
+  { a: "montagnes" }, ". Vers le bord des plaques, leurs mouvements engendrent des ", { a: "secousses" },
+  " (tremblements de terre) et des ", { a: "fissures" }, " de la croûte terrestre à l’origine du ", { a: "volcanisme" }, "."
+];
+var LECON2 = [
+  "Un volcan se présente sous l’aspect d’une ", { a: "montagne" }, " avec un ", { a: "cratère" }, " à son sommet. Il est formé autour de la ",
+  { a: "cheminée" }, " par laquelle remontent des ", { a: "roches" }, " très ", { a: "chaudes" },
+  " et partiellement fondues présentes dans le sous-sol (le ", { a: "magma" }, "). Une ", { a: "éruption" },
+  " volcanique a lieu lorsque ce magma est éjecté en ", { a: "surface" }, ". Il prend alors le nom de ", { a: "lave" },
+  " et, en refroidissant, devient de la roche ", { a: "solide" }, "."
+];
+
+/* ---------- Dessins ---------- */
+function marker(x, y, n, lx, ly) {
+  var line = (lx != null) ? '<line x1="' + x + '" y1="' + y + '" x2="' + lx + '" y2="' + ly + '" stroke="var(--mark-ink)" stroke-width="2.5"/>' + '<circle cx="' + lx + '" cy="' + ly + '" r="3.5" fill="var(--mark-ink)"/>' : "";
+  return line + '<circle cx="' + x + '" cy="' + y + '" r="15" fill="var(--mark-bg)" stroke="var(--mark-ink)" stroke-width="2.5"/>' +
+    '<text x="' + x + '" y="' + (y + 6) + '" text-anchor="middle" font-size="17" fill="var(--mark-ink)">' + n + '</text>';
+}
+function earthSVG(opts) {
+  opts = opts || {};
+  var interactive = opts.interactive;
+  var cls = interactive ? ' class="layer"' : "";
+  var s = '<svg class="diagram" viewBox="0 0 320 320" role="img" aria-label="Coupe de la Terre : croûte, manteau, noyau">' +
+    '<defs><radialGradient id="gMantle" cx="50%" cy="50%" r="50%"><stop offset="55%" stop-color="var(--mantle-2)"/><stop offset="100%" stop-color="var(--mantle)"/></radialGradient>' +
+    '<radialGradient id="gCore" cx="45%" cy="45%" r="55%"><stop offset="0%" stop-color="var(--core)"/><stop offset="100%" stop-color="var(--core-2)"/></radialGradient></defs>' +
+    '<g' + cls + ' data-layer="croute"><circle cx="160" cy="160" r="142" fill="var(--crust)"/></g>' +
+    '<g' + cls + ' data-layer="manteau"><circle cx="160" cy="160" r="132" fill="url(#gMantle)"/></g>' +
+    '<g' + cls + ' data-layer="noyau"><circle cx="160" cy="160" r="76" fill="url(#gCore)"/></g>';
+  if (opts.numbers) {
+    s += marker(292, 30, 1, 264, 71) + marker(28, 262, 2, 70, 214) + marker(160, 160, 3);
+  }
+  return s + "</svg>";
+}
+function volcanoSVG(opts) {
+  opts = opts || {};
+  var s = '<svg class="diagram" viewBox="0 0 400 390" role="img" aria-label="Schéma d’un volcan en éruption">' +
+    /* sous-sol en couches */
+    '<rect x="20" y="232" width="360" height="148" fill="var(--strata-1)"/>' +
+    '<rect x="20" y="272" width="360" height="40" fill="var(--strata-2)"/>' +
+    '<rect x="20" y="312" width="360" height="68" fill="var(--strata-3)"/>' +
+    /* anciennes coulées dans le sous-sol */
+    '<path d="M196 240 C170 262 120 280 70 300" stroke="var(--rock-dark)" stroke-width="7" fill="none" stroke-linecap="round"/>' +
+    '<path d="M204 250 C235 275 280 290 335 296" stroke="var(--rock-dark)" stroke-width="7" fill="none" stroke-linecap="round"/>' +
+    /* cône */
+    '<polygon points="40,234 168,96 232,96 360,234" fill="var(--rock)"/>' +
+    '<path d="M168 96 Q200 116 232 96 Z" fill="var(--rock-dark)"/>' +
+    /* anciennes coulées sur le cône */
+    '<path d="M176 108 C160 140 130 175 92 214" stroke="var(--rock-dark)" stroke-width="8" fill="none" stroke-linecap="round"/>' +
+    '<path d="M224 108 C240 145 270 180 312 220" stroke="var(--rock-dark)" stroke-width="8" fill="none" stroke-linecap="round"/>' +
+    /* réservoir de magma et cheminée */
+    '<ellipse cx="200" cy="356" rx="96" ry="24" fill="var(--magma)"/>' +
+    '<polygon points="192,350 208,350 205,104 195,104" fill="var(--magma)"/>' +
+    /* nuage de cendres */
+    '<g class="puff"><circle cx="170" cy="50" r="26" fill="var(--ash)"/><circle cx="205" cy="36" r="30" fill="var(--ash-2)"/><circle cx="238" cy="54" r="24" fill="var(--ash)"/><circle cx="200" cy="64" r="22" fill="var(--ash-2)"/></g>' +
+    /* lave projetée */
+    '<path d="M200 100 L176 70 M200 100 L200 62 M200 100 L226 72 M200 100 L160 86 M200 100 L242 88" stroke="var(--lava)" stroke-width="6" stroke-linecap="round"/>' +
+    '<circle cx="152" cy="80" r="5" fill="var(--magma)"/><circle cx="250" cy="80" r="5" fill="var(--magma)"/><circle cx="140" cy="100" r="4" fill="var(--lava)"/>' +
+    /* explosion */
+    '<polygon points="200,82 206,93 218,92 209,100 214,111 200,105 186,111 191,100 182,92 194,93" fill="#ffe680" stroke="var(--lava)" stroke-width="2"/>';
+  if (opts.numbers) {
+    s += marker(300, 24, 1, 248, 44) +
+      marker(110, 46, 2, 172, 70) +
+      marker(318, 86, 3, 215, 98) +
+      marker(318, 132, 4, 222, 99) +
+      marker(52, 162, 5, 126, 178) +
+      marker(352, 262, 6, 201, 262) +
+      marker(52, 352, 7, 120, 356);
+  }
+  return s + "</svg>";
+}
+function volcanoMiniSVG() {
+  return '<svg viewBox="0 0 140 130" aria-hidden="true">' +
+    '<g class="puff"><circle cx="58" cy="30" r="18" fill="var(--ash)"/><circle cx="80" cy="22" r="20" fill="var(--ash-2)"/><circle cx="98" cy="36" r="15" fill="var(--ash)"/></g>' +
+    '<polygon points="8,124 58,56 82,56 132,124" fill="var(--rock)"/><path d="M58 56 Q70 64 82 56 Z" fill="var(--rock-dark)"/>' +
+    '<path d="M64 60 C60 78 50 96 40 112" stroke="var(--magma)" stroke-width="7" fill="none" stroke-linecap="round"/>' +
+    '<path d="M70 58 L58 40 M70 58 L72 36 M70 58 L86 42" stroke="var(--lava)" stroke-width="5" stroke-linecap="round"/></svg>';
+}
+function platesSVG() {
+  return '<svg class="plates-svg" viewBox="0 0 400 200" role="img" aria-label="Deux plaques posées sur le manteau">' +
+    '<rect x="0" y="108" width="400" height="92" fill="var(--mantle)"/>' +
+    '<text x="12" y="190" font-size="15" fill="#5a2600">manteau</text>' +
+    '<rect class="rise" x="172" y="80" width="56" height="34" fill="var(--magma)"/>' +
+    '<g class="quake">' +
+      '<polygon class="slab" points="196,80 258,128 246,146 188,108" fill="#9b6b44"/>' +
+      '<polygon class="plate plate-a" points="0,80 200,80 200,108 0,108" fill="#9b6b44"/>' +
+      '<polygon class="plate plate-b" points="198,80 400,80 400,108 198,108" fill="var(--crust)"/>' +
+      '<polygon class="mountain" points="196,81 212,56 224,66 238,38 252,60 264,48 286,81" fill="#7a5233"/>' +
+    '</g>' +
+    '<text x="60" y="70" font-size="16" fill="var(--ink)">plaque A</text>' +
+    '<text x="290" y="70" font-size="16" fill="var(--ink)">plaque B</text>' +
+    '</svg>';
+}
+
+/* ---------- Écrans communs ---------- */
+function screen(title, pct, body) {
+  app.innerHTML =
+    '<div class="topbar"><button class="back" id="back">← Missions</button><h1>' + title + '</h1></div>' +
+    (pct != null ? '<div class="progress" aria-hidden="true"><div style="width:' + Math.round(pct * 100) + '%"></div></div>' : "") +
+    body;
+  document.getElementById("back").onclick = home;
+  window.scrollTo(0, 0);
+}
+function starsHTML(n, cls) {
+  var s = '<span class="' + (cls || "stars") + '" aria-label="' + n + ' étoile' + (n > 1 ? "s" : "") + ' sur 3">';
+  for (var i = 0; i < 3; i++) s += i < n ? '<span class="on">★</span>' : "<span>★</span>";
+  return s + "</span>";
+}
+function starsFor(score, total) { var r = total ? score / total : 0; return r >= 0.9 ? 3 : r >= 0.7 ? 2 : r >= 0.4 ? 1 : 0; }
+
+function finish(id, title, score, total, review, opts) {
+  opts = opts || {};
+  var stars = starsFor(score, total);
+  var prev = progress[id] || 0;
+  if (stars > prev) { progress[id] = stars; store.set("progress", progress); }
+  var msgs = [
+    "Pas grave" + who() + " ! Relis la fiche de révision, puis rejoue.",
+    "C’est un bon début" + who() + ". Relis la leçon et réessaie !",
+    "Très bien" + who() + " ! Encore un petit effort pour les 3 étoiles.",
+    "Excellent" + who() + " ! Tu maîtrises cette partie."
+  ];
+  var head = ["Continue !", "Bon début !", "Bravo !", "Champion·ne des volcans !"][stars];
+  var grade = "";
+  if (opts.exam) {
+    var note = Math.round(score / total * 20 * 2) / 2;
+    grade = '<p class="grade">' + String(note).replace(".", ",") + ' / 20</p>';
+    store.set("lastExam", note);
+  }
+  var rev = "";
+  if (review && review.length) {
+    rev = '<div class="review"><h3>À revoir</h3>' + review.map(function (r) {
+      return '<div class="item"><span>' + r.q + '</span><span class="good">✔ ' + r.a + '</span>' + (r.why ? '<span class="hint">' + r.why + '</span>' : "") + "</div>";
+    }).join("") + "</div>";
+  } else if (total) {
+    rev = '<p class="note">Aucune erreur. Tu peux passer à la mission suivante !</p>';
+  }
+  screen(title, 1,
+    '<section class="card result">' + starsHTML(stars, "big-stars") + "<h2>" + head + "</h2>" + grade +
+    '<p class="score">' + score + " bonne" + (score > 1 ? "s" : "") + " réponse" + (score > 1 ? "s" : "") + " sur " + total + "</p>" +
+    "<p>" + msgs[stars] + "</p>" + rev +
+    '<div class="row"><button class="btn" id="again">Rejouer</button><button class="btn alt" id="home2">Retour aux missions</button></div></section>');
+  sound(stars >= 2);
+  document.getElementById("again").onclick = opts.replay;
+  document.getElementById("home2").onclick = home;
+}
+
+/* ---------- Quiz à choix (QCM et Vrai/Faux) ---------- */
+function runQuiz(id, title, items, opts) {
+  opts = opts || {};
+  var i = 0, score = 0, review = [];
+  function show() {
+    var it = items[i];
+    var choices = it.vf ? ["Vrai", "Faux"] : shuffle(it.c.slice());
+    screen(title, i / items.length,
+      '<section class="card"><p class="qnum">Question ' + (i + 1) + " sur " + items.length + (it.vf ? " · Vrai ou faux ?" : "") + "</p>" +
+      '<h2 class="qtext">' + it.q + "</h2>" +
+      '<div class="choices' + (it.vf ? " vf" : "") + '">' + choices.map(function (c, k) { return '<button class="choice" data-k="' + k + '">' + c + "</button>"; }).join("") + "</div>" +
+      '<div class="feedback" id="fb" hidden></div></section>');
+    $all(".choice").forEach(function (b) {
+      b.onclick = function () {
+        var chosen = choices[+b.dataset.k], good = it.c[0], ok = chosen === good;
+        $all(".choice").forEach(function (x) {
+          x.disabled = true;
+          if (choices[+x.dataset.k] === good) x.classList.add("ok");
+        });
+        if (!ok) { b.classList.add("bad"); review.push({ q: it.q, a: good, why: it.why }); } else score++;
+        sound(ok);
+        var fb = document.getElementById("fb");
+        fb.className = "feedback " + (ok ? "ok" : "bad");
+        fb.innerHTML = '<strong class="head">' + (ok ? pick(["Bravo !", "Exact !", "Super !", "Bien joué !"], 1)[0] : "Oups…") + "</strong>" +
+          (ok ? "" : "<span>La bonne réponse : <b>" + good + "</b></span>") +
+          "<span>" + it.why + "</span>" +
+          '<button class="btn" id="next">' + (i + 1 < items.length ? "Question suivante →" : "Voir mon résultat") + "</button>";
+        fb.hidden = false;
+        var nx = document.getElementById("next");
+        nx.focus({ preventScroll: true });
+        fb.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        nx.onclick = function () { i++; if (i < items.length) show(); else finish(id, title, score, items.length, review, { exam: opts.exam, replay: opts.replay }); };
+      };
+    });
+  }
+  show();
+}
+
+/* ---------- Moteur « trous » : textes à compléter et légendes ---------- */
+function runHoles(cfg) {
+  var answers = [];
+  cfg.parts.forEach(function (p) { if (typeof p !== "string") answers.push(p.a); });
+  var n = answers.length;
+  var words = shuffle(answers.concat(cfg.distractors || []));
+  var filled = new Array(n).fill(null);     /* index du mot de la réserve */
+  var state = new Array(n).fill("");        /* "", "right", "revealed" */
+  var active = 0, checks = 0, firstScore = null, wrongFlash = {};
+  var review = [];
+
+  function render() {
+    var k = 0;
+    var holes = cfg.parts.map(function (p) {
+      if (typeof p === "string") return p;
+      var idx = k++;
+      var w = filled[idx] != null ? words[filled[idx]] : null;
+      var c = "blank";
+      if (state[idx] === "right") c += " right";
+      else if (state[idx] === "revealed") c += " revealed";
+      else { if (w == null) c += " empty"; if (idx === active) c += " active"; if (wrongFlash[idx]) c += " wrong"; }
+      var label = state[idx] === "revealed" ? answers[idx] : (w == null ? "……" : w);
+      return '<button class="' + c + '" data-i="' + idx + '" aria-label="Trou ' + (idx + 1) + '">' + label + "</button>";
+    }).join("");
+    var used = {};
+    filled.forEach(function (f) { if (f != null) used[f] = true; });
+    var done = state.every(function (s) { return s; });
+    var allFilled = filled.every(function (f, i2) { return f != null || state[i2]; });
+    var bank = done ? "" : '<div class="bank" aria-label="Réserve de mots">' + words.map(function (w, wi) {
+      return used[wi] ? "" : '<button class="chip" data-w="' + wi + '">' + w + "</button>";
+    }).join("") + "</div>";
+    var body = cfg.layout === "diagram"
+      ? '<div class="diagram-row"><div>' + cfg.svg + '</div><ol class="legend-list">' + holes + "</ol></div>"
+      : '<div class="text-holes">' + holes + "</div>";
+    var status = "";
+    if (checks > 0 && !done) status = '<p class="note">Les mots en vert sont justes. Corrige les trous vides et vérifie encore' + (checks === 2 ? " (dernier essai)." : ".") + "</p>";
+    screen(cfg.title, done ? 1 : state.filter(Boolean).length / n,
+      '<section class="card">' + (cfg.intro ? '<p class="hint">' + cfg.intro + "</p>" : "") + body + status + bank +
+      '<div class="row">' + (done
+        ? '<button class="btn" id="end">Voir mon résultat</button>'
+        : '<button class="btn" id="check"' + (allFilled ? "" : " disabled") + '>Vérifier</button><span class="hint">' + (allFilled ? "Tout est rempli !" : "Touche un trou, puis un mot.") + "</span>") +
+      "</div></section>");
+    wrongFlash = {};
+    $all(".blank").forEach(function (b) {
+      b.onclick = function () {
+        var i2 = +b.dataset.i;
+        if (state[i2]) return;
+        if (filled[i2] != null) filled[i2] = null;
+        active = i2; render();
+      };
+    });
+    $all(".chip").forEach(function (c) {
+      c.onclick = function () {
+        if (active == null || state[active]) active = nextEmpty(0);
+        if (active == null) return;
+        filled[active] = +c.dataset.w;
+        active = nextEmpty(active);
+        render();
+      };
+    });
+    var ch = document.getElementById("check");
+    if (ch) ch.onclick = check;
+    var en = document.getElementById("end");
+    if (en) en.onclick = function () { finish(cfg.id, cfg.title, firstScore, n, review, { replay: function () { runHoles(cfg); } }); };
+  }
+  function nextEmpty(from) {
+    for (var s = 0; s < n; s++) { var i2 = (from + s) % n; if (!state[i2] && filled[i2] == null) return i2; }
+    return null;
+  }
+  function check() {
+    checks++;
+    var good = 0;
+    for (var i2 = 0; i2 < n; i2++) {
+      if (state[i2]) { good++; continue; }
+      if (words[filled[i2]] === answers[i2]) { state[i2] = "right"; good++; }
+      else {
+        if (checks === 1) review.push({ q: (cfg.layout === "diagram" ? "Numéro " + (i2 + 1) : "Trou n°" + (i2 + 1)) + " : tu avais mis « " + words[filled[i2]] + " »", a: answers[i2] });
+        filled[i2] = null; wrongFlash[i2] = true;
+      }
+    }
+    if (firstScore == null) firstScore = good;
+    sound(good === n);
+    if (good < n && checks >= 3) {
+      for (var j = 0; j < n; j++) if (!state[j]) state[j] = "revealed";
+    }
+    active = nextEmpty(0);
+    render();
+  }
+  render();
+}
+
+/* ---------- Relie ---------- */
+var PAIRS = [
+  { l: "Il s’étend sur environ 2800 km d’épaisseur.", r: "le manteau" },
+  { l: "Elle est épaisse de 6 à 70 km.", r: "la croûte terrestre" },
+  { l: "Il mesure environ 6400 km.", r: "le rayon de la Terre" },
+  { l: "Il est formé surtout de fer.", r: "le noyau" },
+  { l: "Elles bougent de quelques centimètres par an.", r: "les plaques" }
+];
+var PAIR_COLORS = ["#e2512a", "#2f7ae5", "#23925a", "#9b4dca", "#d49a00"];
+function runRelie() {
+  var title = "Relie";
+  var left = shuffle(PAIRS.slice());
+  var right = shuffle(PAIRS.map(function (p) { return p.r; }));
+  var link = {};          /* gauche -> droite */
+  var locked = {};
+  var selL = null, selR = null, checks = 0, firstScore = null, flash = {}, review = [];
+  function colorOf(li) { return PAIR_COLORS[li % PAIR_COLORS.length]; }
+  function leftOfRight(ri) { for (var k in link) if (link[k] === ri) return +k; return null; }
+  function render() {
+    var n = left.length, allLinked = Object.keys(link).length === n, done = Object.keys(locked).length === n;
+    var L = left.map(function (p, i) {
+      var c = link[i] != null ? colorOf(i) : null;
+      return '<button class="mitem' + (selL === i ? " sel" : "") + (locked[i] ? " right" : "") + (flash["l" + i] ? " wrong" : "") + '" data-l="' + i + '">' +
+        '<span class="dot" style="' + (c ? "background:" + c + ";border:2px solid " + c : "") + '"></span><span>' + p.l + "</span></button>";
+    }).join("");
+    var R = right.map(function (r, i) {
+      var li = leftOfRight(i), c = li != null ? colorOf(li) : null;
+      return '<button class="mitem' + (selR === i ? " sel" : "") + (li != null && locked[li] ? " right" : "") + '" data-r="' + i + '">' +
+        '<span class="dot" style="' + (c ? "background:" + c + ";border:2px solid " + c : "") + '"></span><span><b>' + r + "</b></span></button>";
+    }).join("");
+    screen(title, Object.keys(locked).length / n,
+      '<section class="card"><p class="hint">Touche une phrase à gauche, puis ce qui lui correspond à droite. Les deux prennent la même couleur.</p>' +
+      '<div class="match"><div class="col">' + L + '</div><div class="col">' + R + "</div></div>" +
+      (checks && !done ? '<p class="note">Les paires en vert sont justes. Refais les autres.</p>' : "") +
+      '<div class="row">' + (done ? '<button class="btn" id="end">Voir mon résultat</button>' : '<button class="btn" id="check"' + (allLinked ? "" : " disabled") + ">Vérifier</button>") + "</div></section>");
+    flash = {};
+    $all("[data-l]").forEach(function (b) {
+      b.onclick = function () {
+        var i = +b.dataset.l; if (locked[i]) return;
+        if (link[i] != null && selR == null) { delete link[i]; }
+        selL = i; tryPair(); render();
+      };
+    });
+    $all("[data-r]").forEach(function (b) {
+      b.onclick = function () {
+        var i = +b.dataset.r, li = leftOfRight(i);
+        if (li != null && locked[li]) return;
+        if (li != null && selL == null) { delete link[li]; }
+        selR = i; tryPair(); render();
+      };
+    });
+    var ch = document.getElementById("check");
+    if (ch) ch.onclick = check;
+    var en = document.getElementById("end");
+    if (en) en.onclick = function () { finish("relie", title, firstScore, n, review, { replay: runRelie }); };
+  }
+  function tryPair() {
+    if (selL == null || selR == null) return;
+    var other = leftOfRight(selR);
+    if (other != null) delete link[other];
+    link[selL] = selR; selL = selR = null;
+  }
+  function check() {
+    checks++;
+    var good = 0;
+    left.forEach(function (p, i) {
+      if (locked[i]) { good++; return; }
+      if (right[link[i]] === p.r) { locked[i] = true; good++; }
+      else { if (checks === 1) review.push({ q: p.l, a: p.r }); delete link[i]; flash["l" + i] = true; }
+    });
+    if (firstScore == null) firstScore = good;
+    sound(good === left.length);
+    if (good < left.length && checks >= 3) left.forEach(function (p, i) { if (!locked[i]) { link[i] = right.indexOf(p.r); locked[i] = true; } });
+    render();
+  }
+  render();
+}
+
+/* ---------- Éruption dans l’ordre ---------- */
+var STEPS = [
+  "Sous le volcan, le magma (des roches très chaudes et partiellement fondues) se trouve dans le sous-sol.",
+  "Le magma remonte par la cheminée.",
+  "Il est éjecté en surface par le cratère : c’est l’éruption volcanique.",
+  "On l’appelle maintenant la lave. Elle coule, et un nuage de cendres apparaît.",
+  "En refroidissant, la lave devient de la roche solide (les anciennes coulées)."
+];
+function runOrdre() {
+  var title = "L’éruption dans l’ordre";
+  var pool = shuffle(STEPS.map(function (s, i) { return i; }));
+  var placed = [], errors = 0;
+  function render(wrongIdx) {
+    var done = placed.length === STEPS.length;
+    screen(title, placed.length / STEPS.length,
+      '<section class="card"><p class="hint">Que se passe-t-il pendant une éruption ? Touche les étapes <b>dans le bon ordre</b>, de la première à la dernière.</p>' +
+      (placed.length ? '<ol class="order-done">' + placed.map(function (i) { return "<li><span>" + STEPS[i] + "</span></li>"; }).join("") + "</ol>" : "") +
+      (done ? '<p class="note">Bravo, l’éruption est complète !</p><div class="row"><button class="btn" id="end">Voir mon résultat</button></div>'
+        : '<p class="qnum">Étape ' + (placed.length + 1) + ' : laquelle vient maintenant ?</p><div class="order-pool">' + pool.map(function (i) {
+          return '<button class="ocard' + (wrongIdx === i ? " wrong" : "") + '" data-s="' + i + '">' + STEPS[i] + "</button>";
+        }).join("") + "</div>") + "</section>");
+    $all("[data-s]").forEach(function (b) {
+      b.onclick = function () {
+        var i = +b.dataset.s;
+        if (i === placed.length) { placed.push(i); pool.splice(pool.indexOf(i), 1); sound(true); render(); }
+        else { errors++; sound(false); render(i); }
+      };
+    });
+    var en = document.getElementById("end");
+    if (en) en.onclick = function () {
+      var score = Math.max(0, STEPS.length - errors);
+      finish("eruption", title, score, STEPS.length, errors ? [{ q: "L’ordre d’une éruption", a: "magma dans le sous-sol → remonte par la cheminée → éruption au cratère → lave et nuage de cendres → roche solide" }] : [], { replay: runOrdre });
+    };
+  }
+  render();
+}
+
+/* ---------- Mission 1 : voyage au centre de la Terre ---------- */
+var LAYERS = {
+  croute: { name: "La croûte terrestre", text: "C’est la « peau » de la pêche. Elle est faite de <b>roches solides</b>. Son épaisseur : de <b>6 à 70 km</b> selon les endroits. C’est très mince par rapport au rayon de la Terre (environ 6400 km)." },
+  manteau: { name: "Le manteau", text: "C’est la « chair » de la pêche. Il est composé de <b>roches très chaudes et comprimées</b>. Il s’étend sur environ <b>2800 km</b> d’épaisseur." },
+  noyau: { name: "Le noyau", text: "Dans la partie centrale se trouve un gros noyau, formé <b>surtout de fer</b>." }
+};
+function runTerre() {
+  var title = "Voyage au centre de la Terre";
+  var seen = {};
+  function render(sel) {
+    var count = Object.keys(seen).length;
+    var info = sel ? '<h3>' + LAYERS[sel].name + "</h3><p>" + LAYERS[sel].text + "</p>" : '<h3>Touche une couche</h3><p>La Terre est pratiquement ronde. On compare sa structure à celle d’une <b>pêche</b>. Touche chaque couche du dessin pour la découvrir.</p>';
+    screen(title, null,
+      '<section class="card"><div class="diagram-row"><div>' + earthSVG({ interactive: true }) + "</div>" +
+      '<div class="layer-info" style="display:flex;flex-direction:column;gap:10px">' + info +
+      '<div class="seen-row">' + ["croute", "manteau", "noyau"].map(function (k) { return '<span class="seen' + (seen[k] ? " on" : "") + '">' + (seen[k] ? "✔ " : "") + LAYERS[k].name.replace(/^L[ae] |^La /, "") + "</span>"; }).join("") + "</div></div></div>" +
+      '<p class="note">Le savais-tu ? Sur ce dessin, la croûte est dessinée beaucoup trop épaisse pour qu’on la voie. À la bonne échelle, elle serait plus fine qu’un trait de crayon !</p>' +
+      '<div class="row"><button class="btn" id="go"' + (count < 3 ? " disabled" : "") + ">Je passe au défi →</button>" + (count < 3 ? '<span class="hint">Découvre les 3 couches (' + count + "/3)</span>" : "") + "</div></section>");
+    $all(".layer").forEach(function (g) {
+      if (g.dataset.layer === sel) g.classList.add("sel");
+      g.onclick = function () { seen[g.dataset.layer] = true; render(g.dataset.layer); };
+    });
+    document.getElementById("go").onclick = function () {
+      runHoles({
+        id: "terre", title: title, layout: "diagram", svg: earthSVG({ numbers: true }),
+        intro: "Écris le nom de chaque couche : touche un numéro, puis le bon mot.",
+        parts: ['<li><span class="n">1</span>', { a: "la croûte terrestre" }, '</li><li><span class="n">2</span>', { a: "le manteau" }, '</li><li><span class="n">3</span>', { a: "le noyau" }, "</li>"],
+        distractors: ["le cratère"]
+      });
+    };
+  }
+  render(null);
+}
+
+/* ---------- Mission 4 : les plaques qui bougent ---------- */
+function runPlaques() {
+  var title = "Les plaques qui bougent";
+  screen(title, null,
+    '<section class="card"><p>La croûte terrestre est faite de <b>grandes plaques</b> qui « flottent » sur le manteau. Elles se déplacent <b>lentement</b>, de quelques centimètres par an.</p>' +
+    '<div id="scene">' + platesSVG() + '</div><p class="scene-label" id="sceneLabel">Appuie sur un bouton pour faire bouger les plaques.</p>' +
+    '<div class="row"><button class="btn" id="collide">Les plaques se rencontrent</button><button class="btn alt" id="apart">Les plaques s’écartent</button></div>' +
+    '<p class="note">Quand deux plaques se rencontrent et que l’une passe <b>sous</b> l’autre, le bord de celle du dessus est soulevé, fissuré et plissé : des <b>montagnes</b> naissent. C’est ainsi que se sont formés l’<b>Himalaya</b> (au nord de l’Inde) et la <b>cordillère des Andes</b> (en Amérique du Sud). Au bord des plaques, les mouvements provoquent des <b>secousses</b> (tremblements de terre) et des <b>fissures</b>, à l’origine du <b>volcanisme</b>.</p>' +
+    '<div class="row"><button class="btn" id="quiz">Je passe au quiz →</button></div></section>');
+  var scene = document.getElementById("scene"), label = document.getElementById("sceneLabel");
+  document.getElementById("collide").onclick = function () {
+    scene.className = ""; void scene.offsetWidth; scene.className = "scene-collide";
+    label.textContent = "La plaque A passe sous la plaque B : une montagne se forme, et le sol tremble !";
+  };
+  document.getElementById("apart").onclick = function () {
+    scene.className = "scene-apart";
+    label.textContent = "Les plaques s’écartent : la croûte se fissure et le magma peut remonter.";
+  };
+  document.getElementById("quiz").onclick = function () { runQuiz("plaques", title, pick(PLAQUES, 8), { replay: runPlaques }); };
+}
+
+/* ---------- Mission 5 : légende du volcan ---------- */
+function runVolcan() {
+  runHoles({
+    id: "volcan", title: "Légende le volcan", layout: "diagram", svg: volcanoSVG({ numbers: true }),
+    intro: "Complète le schéma du volcan (comme le document 3) : touche un numéro, puis le bon mot.",
+    parts: [
+      '<li><span class="n">1</span>', { a: "nuage de cendres" }, "</li>",
+      '<li><span class="n">2</span>', { a: "lave" }, "</li>",
+      '<li><span class="n">3</span>', { a: "explosion volcanique" }, "</li>",
+      '<li><span class="n">4</span>', { a: "cratère" }, "</li>",
+      '<li><span class="n">5</span>', { a: "anciennes coulées de lave" }, "</li>",
+      '<li><span class="n">6</span>', { a: "cheminée" }, "</li>",
+      '<li><span class="n">7</span>', { a: "magma" }, "</li>"
+    ],
+    distractors: ["noyau"]
+  });
+}
+
+/* ---------- Évaluation blanche ---------- */
+function runExam() {
+  var items = shuffle(pick(DEF, 3).concat(pick(TERRE, 3), pick(PLAQUES, 3), pick(VOLCAN, 3), pick(VF_Q, 6)));
+  runQuiz("exam", "Évaluation blanche", items, { exam: true, replay: runExam });
+}
+
+/* ---------- Fiches de révision ---------- */
+function fill(parts) {
+  return parts.map(function (p) { return typeof p === "string" ? p : "<mark>" + p.a + "</mark>"; }).join("");
+}
+function runFiches() {
+  screen("Mes fiches de révision", null,
+    '<section class="card fiche"><span class="label">Thème 1 · Leçon 1</span><h2>La structure de la Terre</h2>' +
+    '<div class="diagram-row"><div>' + earthSVG({ numbers: true }) + '</div><ol class="legend-list"><li><span class="n">1</span><span>la croûte terrestre</span></li><li><span class="n">2</span><span>le manteau</span></li><li><span class="n">3</span><span>le noyau</span></li></ol></div><div class="facts">' +
+    '<div class="fact"><b>6 à 70 km</b>épaisseur de la croûte</div><div class="fact"><b>≈ 2800 km</b>épaisseur du manteau</div><div class="fact"><b>≈ 6400 km</b>rayon de la Terre</div><div class="fact"><b>quelques cm</b>par an : vitesse des plaques</div></div>' +
+    "<p>" + fill(LECON1A) + "</p><p>" + fill(LECON1B) + "</p>" +
+    '<p class="note">La pêche : la <b>peau</b> = la croûte terrestre · la <b>chair</b> = le manteau · le <b>noyau</b> = le noyau.</p></section>' +
+    '<section class="card fiche"><span class="label">Thème 1 · Leçon 2</span><h2>Les volcans</h2>' +
+    '<div class="diagram-row"><div>' + volcanoSVG({ numbers: true }) + '</div><ol class="legend-list">' +
+    ["nuage de cendres", "lave", "explosion volcanique", "cratère", "anciennes coulées de lave", "cheminée", "magma"].map(function (w, i) { return '<li><span class="n">' + (i + 1) + "</span><span>" + w + "</span></li>"; }).join("") +
+    "</ol></div><p>" + fill(LECON2) + "</p>" +
+    '<p class="note">Retiens bien : sous la terre, c’est le <b>magma</b>. Quand il sort à la surface, on l’appelle la <b>lave</b>.</p></section>' +
+    '<div class="row"><button class="btn" id="home3">Retour aux missions</button></div>');
+  document.getElementById("home3").onclick = home;
+}
+
+/* ---------- Liste des missions ---------- */
+var SECTIONS = [
+  { title: "Leçon 1", sub: "La structure de la Terre", missions: [
+    { id: "terre", n: 1, t: "Voyage au centre de la Terre", s: "Découvre et légende les couches", run: runTerre },
+    { id: "quisuisje", n: 2, t: "Qui suis-je ?", s: "Retrouve le mot de chaque définition", run: function () { runQuiz("quisuisje", "Qui suis-je ?", pick(DEF, 8), { replay: MISSION_BY_ID.quisuisje.run }); } },
+    { id: "relie", n: 3, t: "Relie", s: "Les nombres à retenir", run: runRelie },
+    { id: "chiffres", n: 4, t: "Quiz de la Terre", s: "Couches, épaisseurs, rayon", run: function () { runQuiz("chiffres", "Quiz de la Terre", pick(TERRE, 7), { replay: MISSION_BY_ID.chiffres.run }); } },
+    { id: "plaques", n: 5, t: "Les plaques qui bougent", s: "Montagnes, séismes, volcanisme", run: runPlaques },
+    { id: "lecon1", n: 6, t: "Leçon 1 à compléter", s: "« Ce que je dois retenir »", run: function () {
+      runHoles({ id: "lecon1", title: "Leçon 1 à compléter", intro: "Partie 1 : la structure de la Terre. Touche un trou, puis le bon mot.", parts: LECON1A, distractors: ["liquides", "glace"] });
+    } },
+    { id: "lecon1b", n: 7, t: "Leçon 1 · les plaques", s: "Suite de la leçon à compléter", run: function () {
+      runHoles({ id: "lecon1b", title: "Leçon 1 · les plaques", intro: "Partie 2 : les plaques qui bougent. Touche un trou, puis le bon mot.", parts: LECON1B, distractors: ["vite", "nuages"] });
+    } }
+  ] },
+  { title: "Leçon 2", sub: "Les volcans", missions: [
+    { id: "volcan", n: 8, t: "Légende le volcan", s: "Comme le document 3", run: runVolcan },
+    { id: "volcanquiz", n: 9, t: "Quiz des volcans", s: "Magma, lave, cratère…", run: function () { runQuiz("volcanquiz", "Quiz des volcans", pick(VOLCAN, 7), { replay: MISSION_BY_ID.volcanquiz.run }); } },
+    { id: "eruption", n: 10, t: "L’éruption dans l’ordre", s: "Remets les étapes en ordre", run: runOrdre },
+    { id: "lecon2", n: 11, t: "Leçon 2 à compléter", s: "« Ce que je dois retenir »", run: function () {
+      runHoles({ id: "lecon2", title: "Leçon 2 à compléter", intro: "Touche un trou, puis le bon mot.", parts: LECON2, distractors: ["noyau", "froides"] });
+    } }
+  ] },
+  { title: "Tout réviser", sub: "Avant le contrôle", missions: [
+    { id: "vf", n: 12, t: "Vrai ou faux ?", s: "Dix affirmations à juger", run: function () { runQuiz("vf", "Vrai ou faux ?", pick(VF_Q, 10), { replay: MISSION_BY_ID.vf.run }); } }
+  ] }
+];
+var MISSION_BY_ID = {};
+SECTIONS.forEach(function (s) { s.missions.forEach(function (m) { MISSION_BY_ID[m.id] = m; }); });
+
+function home() {
+  var total = 0, max = 0;
+  SECTIONS.forEach(function (s) { s.missions.forEach(function (m) { total += progress[m.id] || 0; max += 3; }); });
+  total += progress.exam || 0; max += 3;
+  var last = store.get("lastExam", null);
+  app.innerHTML =
+    '<header class="hero"><div><p class="eyebrow">Sciences · Thème 1</p><h1>Mission Volcans<span>La Terre et les volcans</span></h1></div>' + volcanoMiniSVG() + "</header>" +
+    '<div class="toolbar"><div class="name-field"><label for="pname">Mon prénom</label><input id="pname" maxlength="20" autocomplete="off" placeholder="Écris ton prénom" value="' + esc(playerName) + '"></div>' +
+    '<span class="pill"><span class="star">★</span> ' + total + " / " + max + '</span><button class="icon-btn" id="snd" aria-pressed="' + soundOn + '">Son : ' + (soundOn ? "oui" : "non") + "</button></div>" +
+    SECTIONS.map(function (s) {
+      return '<div class="section-title"><h2>' + s.title + "</h2><small>" + s.sub + '</small></div><div class="missions">' +
+        s.missions.map(function (m) {
+          return '<button class="mission" data-m="' + m.id + '"><span class="num">' + m.n + '</span><span class="t">' + m.t + '</span><span class="s">' + m.s + "</span>" + starsHTML(progress[m.id] || 0) + "</button>";
+        }).join("") +
+        (s.title === "Tout réviser"
+          ? '<button class="mission" id="fiches"><span class="num">?</span><span class="t">Mes fiches de révision</span><span class="s">Les deux leçons complètes, à relire</span><span class="stars">&nbsp;</span></button>' +
+            '<button class="mission big" id="exam"><span class="num">20</span><span class="t">Évaluation blanche</span><span class="s">18 questions mélangées, notées sur 20' + (last != null ? " · dernière note : " + String(last).replace(".", ",") + "/20" : "") + "</span>" + starsHTML(progress.exam || 0) + "</button>"
+          : "") + "</div>";
+    }).join("") +
+    '<p class="footer">Les bonnes réponses viennent des fiches de la classe : Leçon 1 « La structure de la Terre » et Leçon 2 « Les volcans ».</p>';
+  window.scrollTo(0, 0);
+  $all("[data-m]").forEach(function (b) { b.onclick = function () { MISSION_BY_ID[b.dataset.m].run(); }; });
+  document.getElementById("exam").onclick = runExam;
+  document.getElementById("fiches").onclick = runFiches;
+  var input = document.getElementById("pname");
+  input.oninput = function () { playerName = input.value.trim(); store.set("name", playerName); };
+  document.getElementById("snd").onclick = function () { soundOn = !soundOn; store.set("sound", soundOn); home(); };
+}
+
+home();
+})();
+</script>
+<!-- ARTIFACT-END -->
+</html>
