@@ -14,6 +14,7 @@ table.grid td.c, table.grid th.c { width: 92px; text-align: center; }
 .rose-row { display: grid; grid-template-columns: 52mm 1fr; gap: 14px; align-items: center; }
 svg.nest { max-width: 175mm; }
 svg.rose { max-width: 50mm; }
+svg.idf { max-width: 150mm; }
 """
 
 def B(ans, key, cls=""):
@@ -55,6 +56,55 @@ def rose(key):
     s.append('</svg>')
     return "".join(s)
 
+import math
+def sector(cx, cy, r1, r2, a1, a2):
+    def P(r, a):
+        t = math.radians(a)
+        return (cx + r * math.sin(t), cy - r * math.cos(t))
+    span = (a2 - a1) % 360
+    large = 1 if span > 180 else 0
+    x1, y1 = P(r2, a1); x2, y2 = P(r2, a2); x3, y3 = P(r1, a2); x4, y4 = P(r1, a1)
+    return (f"M{x1:.1f} {y1:.1f} A{r2} {r2} 0 {large} 1 {x2:.1f} {y2:.1f} "
+            f"L{x3:.1f} {y3:.1f} A{r1} {r1} 0 {large} 0 {x4:.1f} {y4:.1f} Z")
+
+def idf(key):
+    cx, cy = 300, 205
+    deps = [  # nom, numéro, r1, r2, angle début, angle fin (sens horaire depuis le nord), couronne
+        ("Val-d’Oise", "95", 122, 196, 300, 420, "g"),
+        ("Seine-|et-Marne", "77", 122, 196, 60, 160, "g"),
+        ("Essonne", "91", 122, 196, 160, 230, "g"),
+        ("Yvelines", "78", 122, 196, 230, 300, "g"),
+        ("Seine-|Saint-Denis", "93", 42, 122, 330, 460, "p"),
+        ("Val-de-|Marne", "94", 42, 122, 100, 210, "p"),
+        ("Hauts-de-|Seine", "92", 42, 122, 210, 330, "p"),
+    ]
+    s = ['<svg class="idf" viewBox="0 0 620 410" role="img" aria-label="Schéma des départements d’Île-de-France">']
+    for name, num, r1, r2, a1, a2, cr in deps:
+        fill = "#ededed" if cr == "g" else "#cfcfcf"
+        s.append(f'<path d="{sector(cx, cy, r1, r2, a1 % 360, a2 % 360)}" fill="{fill}" stroke="#111" stroke-width="1.8"/>')
+    s.append(f'<circle cx="{cx}" cy="{cy}" r="42" fill="#fff" stroke="#111" stroke-width="2"/>')
+    def label(name, num, rm, am, fs):
+        t = math.radians(am)
+        x = cx + rm * math.sin(t); y = cy - rm * math.cos(t)
+        parts = name.split("|")
+        out = "".join(f'<text x="{x:.1f}" y="{y - 6 - (len(parts) - 1 - k) * (fs + 2):.1f}" text-anchor="middle" font-size="{fs}" font-weight="700" fill="#111">{t}</text>' for k, t in enumerate(parts))
+        out += f'<rect x="{x-20:.1f}" y="{y+1:.1f}" width="40" height="24" rx="4" fill="#fff" stroke="#111" stroke-width="1.5"/>'
+        if key or num == "75":
+            col = "#c0392b" if (key and num != "75") else "#111"
+            out += f'<text x="{x:.1f}" y="{y+19:.1f}" text-anchor="middle" font-size="16" font-weight="700" fill="{col}">{num}</text>'
+        return out
+    for name, num, r1, r2, a1, a2, cr in deps:
+        am = (a1 + a2) / 2
+        s.append(label(name, num, (r1 + r2) / 2 + (2 if cr == "g" else 0), am, 12.5 if cr == "g" else 11.5))
+    s.append(label("Paris", "75", 4, 0, 13))
+    s.append('<g transform="translate(560,40)"><line x1="0" y1="22" x2="0" y2="-8" stroke="#111" stroke-width="2.5"/><polygon points="0,-16 -7,-2 7,-2" fill="#111"/><text x="0" y="40" text-anchor="middle" font-size="14" font-weight="700" fill="#111">N</text></g>')
+    s.append('<text x="8" y="402" font-size="11" fill="#555">Schéma simplifié, pas à l’échelle</text>')
+    if key:
+        s.append('<rect x="458" y="320" width="14" height="12" fill="#cfcfcf" stroke="#111"/><text x="478" y="331" font-size="13" fill="#c0392b" font-weight="700">petite couronne</text><text x="478" y="347" font-size="13" fill="#c0392b" font-weight="700">92 · 93 · 94</text>')
+        s.append('<rect x="458" y="362" width="14" height="12" fill="#ededed" stroke="#111"/><text x="478" y="373" font-size="13" fill="#c0392b" font-weight="700">grande couronne</text><text x="478" y="389" font-size="13" fill="#c0392b" font-weight="700">77 · 78 · 91 · 95</text>')
+    s.append('</svg>')
+    return "".join(s)
+
 def pts(K, txt):
     return f' <span class="bareme">({txt})</span>' if K else ''
 
@@ -63,7 +113,7 @@ def doc(K):
     h = [f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
          f'<title>{"Corrigé · " if K else ""}Évaluation · Les lieux où j’habite</title>'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Lilita+One&display=swap">'
-         f'<style>{CSS}</style></head><body>']
+         f'<style>{CSS}</style>' + ('<style>svg.idf{max-width:118mm} svg.nest{max-width:160mm} svg.rose{max-width:42mm}</style>' if K else '') + '</head><body>']
     h.append('<div class="head"><div><div class="theme">Géographie · Thème 1 · Les lieux où j’habite</div>')
     h.append(f'<h1>{title}{" &nbsp;<span class=tag>ENSEIGNANT</span>" if K else ""}</h1>')
     if K:
@@ -72,10 +122,11 @@ def doc(K):
         h.append('<div class="ident"><span>Prénom :</span><span>Date :</span></div>')
     h.append('</div><div class="note"><small>Note</small><b>' + ('<em>20</em>' if K else '&nbsp;&nbsp;&nbsp;') + ' / 20</b></div></div>')
     comps = [("Je connais les différentes échelles des lieux où j’habite.", "1", "3"),
-             ("Je connais qui dirige les collectivités et leurs missions.", "2 · 3", "5"),
-             ("Je connais les nombres clés.", "4", "3"),
-             ("Je connais ma commune et je sais la situer.", "5 · 6 · 7", "7"),
-             ("Je connais mon pays.", "8", "2")]
+             ("Je connais qui dirige les collectivités et leurs missions.", "2 · 3", "4"),
+             ("Je connais les nombres clés.", "4", "2"),
+             ("Je connais ma commune et je sais la situer.", "5 · 6 · 7", "6"),
+             ("Je connais mon pays.", "8", "2"),
+             ("Je connais les départements d’Île-de-France et leurs numéros.", "9", "3")]
     if not K:
         h.append('<table class="comp"><tr><th style="text-align:left">Compétences évaluées</th><th>Exercices</th><th class="c">Acquis</th><th class="c">En cours</th><th class="c">Non acquis</th></tr>')
         for c, e, _ in comps:
@@ -102,10 +153,9 @@ def doc(K):
     h.append('</section>')
 
     # 3
-    h.append('<section class="ex"><h2><span class="n">3</span>Qui s’en occupe ?<span class="pts">… / 3</span></h2>')
+    h.append('<section class="ex"><h2><span class="n">3</span>Qui s’en occupe ?<span class="pts">… / 2</span></h2>')
     h.append('<p class="consigne">Coche la collectivité qui s’occupe de chaque mission.' + pts(K, "0,5 point par ligne") + '</p>')
-    missions = [("L’école primaire", 0), ("Les lycées", 2), ("Les collèges", 1), ("La collecte des déchets", 0),
-                ("Les ports et les aéroports", 2), ("L’action sociale et la santé", 1)]
+    missions = [("L’école primaire", 0), ("Les lycées", 2), ("Les collèges", 1), ("La collecte des déchets", 0)]
     h.append('<table class="grid"><tr><th style="text-align:left">Mission</th><th class="c">Commune</th><th class="c">Département</th><th class="c">Région</th></tr>')
     for m, k in missions:
         cells = "".join(f'<td class="c"><span class="box{" x" if (K and j == k) else ""}"></span></td>' for j in range(3))
@@ -113,27 +163,24 @@ def doc(K):
     h.append('</table></section>')
 
     # 4
-    h.append('<section class="ex"><h2><span class="n">4</span>Les nombres à retenir<span class="pts">… / 3</span></h2>')
+    h.append('<section class="ex"><h2><span class="n">4</span>Les nombres à retenir<span class="pts">… / 2</span></h2>')
     h.append('<p class="consigne">Complète avec le bon nombre.' + pts(K, "0,5 point par nombre") + '</p>')
-    h.append('<div class="bank">8 · 18 · 27 · 50 · 101 · 36 000</div>')
+    h.append('<div class="bank">18 · 27 · 101 · 36 000</div>')
     h.append('<ol class="alpha">'
              f'<li><span>•</span><span>Il y a environ {B("36 000", K, "s")} communes en France.</span></li>'
              f'<li><span>•</span><span>Il y a {B("101", K, "s")} départements en France, dont certains en Outre-Mer.</span></li>'
              f'<li><span>•</span><span>Il y a {B("18", K, "s")} régions en France, dont certaines en Outre-Mer.</span></li>'
-             f'<li><span>•</span><span>La région Île-de-France compte {B("8", K, "s")} départements.</span></li>'
-             f'<li><span>•</span><span>Le continent européen est constitué de {B("50", K, "s")} pays.</span></li>'
              f'<li><span>•</span><span>L’Union européenne compte {B("27", K, "s")} pays membres.</span></li></ol>')
     h.append('</section>')
 
     # 5
-    h.append('<section class="ex"><h2><span class="n">5</span>La carte d’identité de Colombes<span class="pts">… / 3</span></h2>')
+    h.append('<section class="ex"><h2><span class="n">5</span>La carte d’identité de Colombes<span class="pts">… / 2</span></h2>')
     h.append('<p class="consigne">Complète la carte d’identité de ta ville.' + pts(K, "0,5 point par ligne") + '</p>')
-    rows = [("Département", "les Hauts-de-Seine"), ("Numéro du département", "92"), ("Région", "l’Île-de-France"),
-            ("Chef-lieu du département", "Nanterre"), ("Nom des habitants", "les Colombiens et les Colombiennes"),
+    rows = [("Département", "les Hauts-de-Seine"), ("Chef-lieu du département", "Nanterre"), ("Nom des habitants", "les Colombiens et les Colombiennes"),
             ("Type de paysage (rural ou urbain ?)", "urbain")]
     h.append('<div style="display:grid;gap:8px">' + "".join(f'<div class="field"><span>{a} :</span>{B(b, K)}</div>' for a, b in rows) + '</div>')
     if K:
-        h.append('<p class="bareme">Accepter « 92 » ou « Hauts-de-Seine (92) » pour le département. Attention : le nom des habitants ne va pas dans « type d’habitations » (pavillons et immeubles).</p>')
+        h.append('<p class="bareme">Accepter « Hauts-de-Seine (92) ». Attention : le nom des habitants ne va pas dans « type d’habitations » (pavillons et immeubles).</p>')
     h.append('</section>')
 
     # 6
@@ -164,6 +211,21 @@ def doc(K):
              f'<li><span>•</span><span>La France est constituée d’une {B("Métropole", K)} et de départements, régions et collectivités d’Outre-Mer.</span></li>'
              f'<li><span>•</span><span>La devise de la France : {B("Liberté", K, "s")}, {B("Égalité", K, "s")}, {B("Fraternité", K, "s")}.</span></li>'
              f'<li><span>•</span><span>Notre pays est une République dirigée par un président élu par le peuple : c’est une {B("démocratie", K)}. Les citoyens participent par le vote.</span></li></ol>')
+    h.append('</section>')
+
+    # 9
+    h.append('<section class="ex"><h2><span class="n">9</span>Les départements d’Île-de-France<span class="pts">… / 3</span></h2>')
+    h.append('<p class="consigne">a) Écris le numéro de chaque département dans sa case. Paris est fait pour toi.' + pts(K, "0,25 point par numéro") + '</p>')
+    h.append(idf(K))
+    h.append('<p class="consigne" style="margin-top:6px">b) La région Île-de-France compte ' + B("8", K, "s") + ' départements.' + pts(K, "0,25 point") + '</p>')
+    h.append('<p class="consigne">c) Autour de Paris, les départements forment la petite couronne et la grande couronne. Coche la bonne case.' + pts(K, "0,25 point par ligne") + '</p>')
+    rows9 = [("Les Hauts-de-Seine", 0), ("L’Essonne", 1), ("La Seine-Saint-Denis", 0), ("Le Val-d’Oise", 1)]
+    h.append('<table class="grid"><tr><th style="text-align:left">Département</th><th class="c">Petite couronne</th><th class="c">Grande couronne</th></tr>')
+    for d, k in rows9:
+        h.append(f'<tr><td>{d}</td>' + "".join(f'<td class="c"><span class="box{" x" if (K and j == k) else ""}"></span></td>' for j in range(2)) + '</tr>')
+    h.append('</table>')
+    if K:
+        h.append('<p class="bareme">Petite couronne : les départements qui touchent Paris (92 Hauts-de-Seine, 93 Seine-Saint-Denis, 94 Val-de-Marne). Grande couronne : 77 Seine-et-Marne, 78 Yvelines, 91 Essonne, 95 Val-d’Oise.</p>')
     h.append('</section>')
 
     if K:
