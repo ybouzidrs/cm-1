@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<link rel="stylesheet" href="fonts.css">
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+</head><body>
+<canvas id="c" width="1280" height="720"></canvas>
+<script src="engine.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const s = document.createElement("script");
+s.src = params.get("film") + ".js";
+s.onload = async () => {
+  await document.fonts.load('40px "Lilita One"'); await document.fonts.load('30px "Andika"');
+  await document.fonts.load('italic 27px "Andika"'); await document.fonts.load('bold 18px "Andika"');
+  await document.fonts.ready;
+  const g = document.getElementById("c").getContext("2d");
+  window.FILM = buildFilm(SCENES);
+  window.drawAt = (T, q) => { renderFrame(g, FILM, T); return g.canvas.toDataURL("image/jpeg", q || 0.9); };
+  window.READY = true;
+};
+document.body.appendChild(s);
+</script>
+</body></html>
