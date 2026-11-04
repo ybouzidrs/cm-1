@@ -214,8 +214,9 @@ class Studio {
     draw(this.g, this.u, talking);
   }
   say(id, text, fr, box, tail, o = {}) {
-    const st = this.c, d = (o.extra || 0) + readTime(text, fr);
-    if (!this.g) this.rec.talks.push({ who: id, s: st, e: st + text.length / 32 });
+    const sd = (typeof VOICE_DUR !== "undefined" && VOICE_DUR[id + "|" + text]) || 0;
+    const st = this.c, d = (o.extra || 0) + Math.max(readTime(text, fr), sd ? sd + 0.9 : 0);
+    if (!this.g) this.rec.talks.push({ who: id, text, s: st, e: st + (sd || text.length / 32) });
     this.c += d;
     if (this.on(st) && (o.keep || this.u < st + d + (o.linger ?? 0))) bubble(this.g, text, fr, box, tail, this.u - st, o);
     return st;
@@ -227,8 +228,9 @@ function buildScene(fn) {
 }
 function buildFilm(sceneFns) {
   const scenes = sceneFns.map(buildScene); let t = 0;
-  for (const s of scenes) { s.t0 = t; t += s.dur; }
-  return { scenes, dur: t };
+  const talks = [];
+  for (const s of scenes) { s.t0 = t; for (const k of s.talks) talks.push({ who: k.who, text: k.text, t: t + k.s }); t += s.dur; }
+  return { scenes, dur: t, talks };
 }
 function renderFrame(g, film, T) {
   const sc = film.scenes.find(s => T >= s.t0 && T < s.t0 + s.dur) || film.scenes[film.scenes.length - 1];

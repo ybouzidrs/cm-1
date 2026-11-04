@@ -18,6 +18,8 @@ s.onload = async () => {
   window.drawAt = (T, q) => { renderFrame(g, FILM, T); return g.canvas.toDataURL("image/jpeg", q || 0.9); };
   window.READY = true;
 };
-document.body.appendChild(s);
+const v = document.createElement("script"); v.src = "voix-" + params.get("film") + ".js";
+v.onload = v.onerror = () => document.body.appendChild(s);
+document.head.appendChild(v);
 </script>
 </body></html>
