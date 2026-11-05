@@ -8,3 +8,7 @@ Dossier `evaluation/` :
 - les versions `.html` des deux documents et `generer.py`, le script qui les produit (il reprend les styles de `sciences/periode-1/evaluation/generer.py`)
 
 Contenu : les échelles emboîtées (quartier → continent), qui dirige quoi, les missions de la commune, du département et de la région, les nombres clés, la carte d'identité de Colombes, le vocabulaire (ville, village, limitrophe), la rose des vents et la situation par rapport à Paris, la France (devise, République, démocratie), et les 8 départements d'Île-de-France avec leurs numéros (Paris 75, petite couronne 92-93-94, grande couronne 77-78-91-95).
+
+## Évaluation 2 à imprimer
+
+Dossier `evaluation-2/` : une deuxième évaluation sur le même thème, avec d'autres questions (sujet et corrigé séparés, 3 pages A4 chacun, notée sur 20). Elle insiste sur les points du bilan : les 9 quartiers, les 7 villes limitrophes à placer sur un schéma, les 8 départements d'Île-de-France (nom, numéro, petite ou grande couronne), « Qui suis-je ? », vrai ou faux, du plus petit au plus grand, et la commune de Colombes.
