@@ -11,4 +11,4 @@ Contenu : les échelles emboîtées (quartier → continent), qui dirige quoi, l
 
 ## Évaluation 2 à imprimer
 
-Dossier `evaluation-2/` : une deuxième évaluation sur le même thème, avec d'autres questions (sujet et corrigé séparés, 3 pages A4 chacun, notée sur 20). Elle insiste sur les points du bilan : les 9 quartiers, les 7 villes limitrophes à placer sur un schéma, les 8 départements d'Île-de-France (nom, numéro, petite ou grande couronne), « Qui suis-je ? », vrai ou faux, du plus petit au plus grand, et la commune de Colombes.
+Dossier `evaluation-2/` : une deuxième évaluation sur le même thème, avec d'autres questions (sujet et corrigé séparés, 4 pages A4 chacun, notée sur 20). Elle compte 10 exercices et couvre tout le contenu des leçons : les 9 quartiers, les 7 villes limitrophes à placer sur un schéma, les 8 départements d'Île-de-France (nom, numéro, petite ou grande couronne), « Qui suis-je ? », vrai ou faux sur Colombes, du plus petit au plus grand, la carte d'identité de Colombes, les missions de la commune, du département et de la région, la France et l'Union européenne, le vocabulaire et les nombres clés.

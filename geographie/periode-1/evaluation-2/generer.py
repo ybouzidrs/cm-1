@@ -42,46 +42,48 @@ def lim_map(K):
 def doc(K):
     h = [f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>{"Corrigé · " if K else ""}Évaluation 2 · Les lieux où j’habite</title>'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Lilita+One&display=swap">'
-         f'<style>{CSS}</style></head><body>']
+         f'<style>{CSS}</style>' + ('<style>body{font-size:10.5pt;line-height:1.38} svg.lim{max-width:110mm} .ex{margin-top:9px} .bank{margin:2px 0 4px;padding:3px 8px} table.grid td,table.grid th,table.vf td{padding:3px 8px} .texte{line-height:1.9}</style>' if K else '') + '</head><body>']
     h.append('<div class="head"><div><div class="theme">Géographie · Thème 1 · Les lieux où j’habite · Évaluation 2</div>')
     h.append(f'<h1>{"Corrigé et barème &nbsp;<span class=tag>ENSEIGNANT</span>" if K else "Évaluation de géographie"}</h1>')
     h.append('<div style="margin-top:6px;font-size:10.5pt">Réponses attendues en <b class="ans">rouge</b>. Le barème est indiqué à droite de chaque titre (total : 20 points).</div>' if K else '<div class="ident"><span>Prénom :</span><span>Date :</span></div>')
     h.append('</div><div class="note"><small>Note</small><b>' + ('<em>20</em>' if K else '&nbsp;&nbsp;&nbsp;') + ' / 20</b></div></div>')
-    comps = [("Je connais mon quartier et les quartiers de ma commune.", "1", "3"),
-             ("Je connais les communes limitrophes et je sais situer Colombes.", "2", "3"),
-             ("Je connais les départements d’Île-de-France (nom et numéro), la petite et la grande couronne.", "3", "4"),
-             ("Je connais les collectivités, ceux qui les dirigent et leurs missions.", "4 · 5", "5"),
-             ("Je range les lieux du plus petit au plus grand.", "6", "2"),
-             ("Je connais ma commune.", "7", "3")]
+    comps = [("Je connais mon quartier et les quartiers de ma commune.", "1", "2"),
+             ("Je connais les communes limitrophes et je sais situer Colombes.", "2", "2,5"),
+             ("Je connais les départements d’Île-de-France (nom et numéro), la petite et la grande couronne.", "3", "3"),
+             ("Je connais les collectivités, ceux qui les dirigent et leurs missions.", "4 · 8", "3,5"),
+             ("Je range les lieux du plus petit au plus grand.", "6", "1,5"),
+             ("Je connais ma commune.", "5 · 7", "3,5"),
+             ("Je connais mon pays et l’Union européenne.", "9", "2"),
+             ("Je connais le vocabulaire et les nombres clés.", "10", "2")]
     if not K:
         h.append('<table class="comp"><tr><th style="text-align:left">Compétences évaluées</th><th>Exercices</th><th class="c">Acquis</th><th class="c">En cours</th><th class="c">Non acquis</th></tr>'
                  + "".join(f'<tr><td>{c}</td><td style="text-align:center">{e}</td><td class="c"></td><td class="c"></td><td class="c"></td></tr>' for c, e, _ in comps) + '</table>')
 
     # 1 Quartiers
-    h.append('<section class="ex"><h2><span class="n">1</span>Les quartiers de Colombes<span class="pts">… / 3</span></h2>')
+    h.append('<section class="ex"><h2><span class="n">1</span>Les quartiers de Colombes<span class="pts">… / 2</span></h2>')
     h.append('<ol class="alpha">'
              f'<li><span>a)</span><span>Colombes est découpée en {B("9", K, "s")} quartiers.{pts(K, "0,5 point")}</span></li>'
              f'<li><span>b)</span><span>Le quartier de mon école s’appelle {B("la Petite-Garenne", K, "l")}.{pts(K, "0,5 point")}</span></li>'
              f'<li><span>c)</span><span>C’est un quartier : {box(K, False)} d’immeubles &nbsp; {box(K, True)} pavillonnaire &nbsp; {box(K, False)} rural{pts(K, "0,5 point")}</span></li>'
-             f'<li><span>d)</span><span>Cite trois autres quartiers de Colombes.{pts(K, "0,5 point par quartier")}</span></li></ol>')
-    h.append('<div class="answer-box">Trois quartiers parmi : Centre, Europe, Fossés-Jean, Agent-Sarre, Stade-Arc sportif, Vallées, Grèves-Petit-Colombes, Victor-Basch.</div>' if K
-             else '<div class="cols2" style="grid-template-columns:1fr 1fr 1fr"><div class="line"></div><div class="line"></div><div class="line"></div></div>')
+             f'<li><span>d)</span><span>Cite deux autres quartiers de Colombes.{pts(K, "0,25 point par quartier")}</span></li></ol>')
+    h.append('<div class="answer-box">Deux quartiers parmi : Centre, Europe, Fossés-Jean, Agent-Sarre, Stade-Arc sportif, Vallées, Grèves-Petit-Colombes, Victor-Basch.</div>' if K
+             else '<div class="cols2"><div class="line"></div><div class="line"></div></div>')
     h.append('</section>')
 
     # 2 Limitrophes
-    h.append('<section class="ex"><h2><span class="n">2</span>Les villes limitrophes<span class="pts">… / 3</span></h2>')
-    h.append('<p class="consigne">a) Une ville limitrophe, c’est une ville…' + pts(K, "0,5 point") + '</p>')
+    h.append('<section class="ex"><h2><span class="n">2</span>Les villes limitrophes<span class="pts">… / 2,5</span></h2>')
+    h.append('<p class="consigne">a) Une ville limitrophe, c’est une ville…' + pts(K, "0,25 point") + '</p>')
     h.append(f'<div class="qcm"><span>{box(K, False)} très loin de Colombes</span><span>{box(K, True)} à la frontière de Colombes</span><span>{box(K, False)} plus grande que Colombes</span></div>')
     h.append('<p class="consigne" style="margin-top:8px">b) Écris le nom des 7 villes limitrophes au bon endroit sur le schéma. Attention, il y a 3 villes en trop dans la liste.' + pts(K, "0,25 point par ville bien placée") + '</p>')
     h.append('<div class="bank">Nanterre · Paris · Bezons · Asnières-sur-Seine · Versailles · Argenteuil · La Garenne-Colombes · Gennevilliers · Saint-Denis · Bois-Colombes</div>')
     h.append(lim_map(K))
-    h.append(f'<p class="consigne">c) Colombes est située au {B("nord-ouest", K)} de Paris.{pts(K, "0,75 point")}</p>')
+    h.append(f'<p class="consigne">c) Colombes est située au {B("nord-ouest", K)} de Paris.{pts(K, "0,5 point")}</p>')
     if K: h.append('<p class="bareme">Les 3 intrus : Paris, Versailles, Saint-Denis. Si l’élève a trouvé les 7 villes mais en a mal placé quelques-unes, on peut compter 0,25 point par ville citée.</p>')
     h.append('</section>')
 
     # 3 IDF
-    h.append('<section class="ex"><h2><span class="n">3</span>Les départements d’Île-de-France<span class="pts">… / 4</span></h2>')
-    h.append('<p class="consigne">Complète le tableau : écris le numéro ou le nom qui manque, puis coche la bonne couronne.' + pts(K, "nom ou numéro 0,25 point ; couronne 0,25 point") + '</p>')
+    h.append('<section class="ex"><h2><span class="n">3</span>Les départements d’Île-de-France<span class="pts">… / 3</span></h2>')
+    h.append('<p class="consigne">Complète le tableau : écris le numéro ou le nom qui manque, puis coche la bonne couronne.' + pts(K, "nom ou numéro : 0,25 point par case ; couronnes : 1 point si tout est juste, 0,5 point pour une ou deux erreurs") + '</p>')
     deps = [("Paris", "75", None, "num"), ("Hauts-de-Seine", "92", "p", "num"), ("Seine-Saint-Denis", "93", "p", "nom"), ("Val-de-Marne", "94", "p", "num"),
             ("Seine-et-Marne", "77", "g", "nom"), ("Yvelines", "78", "g", "num"), ("Essonne", "91", "g", "nom"), ("Val-d’Oise", "95", "g", "nom")]
     t = '<table class="grid"><tr><th style="text-align:left">Nom du département</th><th class="c">Numéro</th><th class="c">Petite couronne</th><th class="c">Grande couronne</th></tr>'
@@ -94,18 +96,17 @@ def doc(K):
             ccr = f'<td class="c">{box(K, cr == "p")}</td><td class="c">{box(K, cr == "g")}</td>'
         t += f'<tr>{cn}{cnum}{ccr}</tr>'
     h.append(t + '</table>')
-    h.append(f'<p class="consigne" style="margin-top:6px">La région Île-de-France compte {B("8", K, "s")} départements.{pts(K, "0,25 point")}</p>')
-    if K: h.append('<p class="bareme">Total : 8 noms ou numéros (2 points) + 7 couronnes (1,75 point) + le nombre de départements (0,25 point) = 4 points. Petite couronne : les 3 départements qui touchent Paris.</p>')
+    if K: h.append('<p class="bareme">Total : 8 noms ou numéros (2 points) + les couronnes (1 point) = 3 points. Petite couronne : les 3 départements qui touchent Paris (92, 93, 94).</p>')
     h.append('</section>')
 
     # 4 Qui suis-je
-    h.append('<section class="ex"><h2><span class="n">4</span>Qui suis-je ?<span class="pts">… / 3</span></h2>')
-    h.append('<p class="consigne">Écris la réponse.' + pts(K, "0,5 point par réponse") + '</p>')
+    h.append('<section class="ex"><h2><span class="n">4</span>Qui suis-je ?<span class="pts">… / 1,5</span></h2>')
+    h.append('<p class="consigne">Écris la réponse.' + pts(K, "0,25 point par réponse") + '</p>')
     h.append('<div class="bank">une commune · un village · un département · une région · un quartier · l’Union européenne</div><ol class="alpha">')
     for l, d, a in [("a)", "Je suis dirigée par le maire et le conseil municipal.", "une commune"),
                     ("b)", "J’ai moins de 2 000 habitants.", "un village"),
-                    ("c)", "Je m’occupe des collèges, sous l’autorité du préfet.", "un département"),
-                    ("d)", "Je m’occupe des lycées et des transports régionaux.", "une région"),
+                    ("c)", "Je suis dirigé par le Conseil départemental, sous l’autorité du préfet.", "un département"),
+                    ("d)", "Je suis dirigée par le Conseil régional.", "une région"),
                     ("e)", "Je suis une partie de la commune avec des caractères communs.", "un quartier"),
                     ("f)", "Je regroupe 27 pays membres.", "l’Union européenne")]:
         h.append(f'<li><span>{l}</span><span class="def"><span>{d}</span>{B(a, K)}</span></li>')
@@ -114,29 +115,57 @@ def doc(K):
     # 5 Vrai faux
     h.append('<section class="ex"><h2><span class="n">5</span>Vrai ou faux ?<span class="pts">… / 2</span></h2>')
     h.append('<p class="consigne">Coche la bonne case.' + pts(K, "0,5 point par ligne") + '</p>')
-    vf = [("Le maire et le conseil municipal sont élus pour 6 ans.", True, ""),
-          ("La commune s’occupe des lycées.", False, "C’est la région."),
-          ("Il y a 101 départements en France.", True, ""),
-          ("La France est une République dirigée par un roi.", False, "Par un président élu par le peuple.")]
+    vf = [("Colombes compte environ 91 000 habitants.", True, "91 053 habitants."),
+          ("Colombes est un village.", False, "C’est une ville : elle a plus de 2 000 habitants."),
+          ("La commune de Colombes s’étend sur 78 km².", False, "Elle s’étend sur 7,81 km²."),
+          ("Le maire de Colombes s’appelle Joakim Giacomoni.", True, "")]
     h.append('<table class="vf"><tr><th style="text-align:left">Affirmation</th><th class="c">Vrai</th><th class="c">Faux</th></tr>')
     for s_, v, why in vf:
         h.append(f'<tr><td>{s_}{f"<br><span class=bareme>{why}</span>" if (K and why) else ""}</td><td class="c">{box(K, v)}</td><td class="c">{box(K, not v)}</td></tr>')
     h.append('</table></section>')
 
     # 6 Ordre
-    h.append('<section class="ex"><h2><span class="n">6</span>Du plus petit au plus grand<span class="pts">… / 2</span></h2>')
-    h.append('<p class="consigne">Numérote de 1 (le plus petit) à 6 (le plus grand).' + pts(K, "2 points si tout est juste ; 1 point pour une seule erreur") + '</p>')
+    h.append('<section class="ex"><h2><span class="n">6</span>Du plus petit au plus grand<span class="pts">… / 1,5</span></h2>')
+    h.append('<p class="consigne">Numérote de 1 (le plus petit) à 6 (le plus grand).' + pts(K, "1,5 point si tout est juste ; 0,75 point pour une seule erreur") + '</p>')
     items = [("la France", 5), ("Colombes", 2), ("l’Europe", 6), ("la Petite-Garenne", 1), ("l’Île-de-France", 4), ("les Hauts-de-Seine", 3)]
     h.append('<div class="order">' + "".join(f'<span>{n}<br><b class="{"ans" if K else ""}" style="font-size:13pt">{r if K else "…"}</b></span>' for n, r in items) + '</div>')
     h.append('</section>')
 
     # 7 Ma commune
-    h.append('<section class="ex"><h2><span class="n">7</span>Ma commune : Colombes<span class="pts">… / 3</span></h2>')
-    h.append('<p class="consigne">Complète.' + pts(K, "0,5 point par réponse") + '</p><div class="cols2">')
+    h.append('<section class="ex"><h2><span class="n">7</span>Ma commune : Colombes<span class="pts">… / 1,5</span></h2>')
+    h.append('<p class="consigne">Complète.' + pts(K, "0,25 point par réponse") + '</p><div class="cols2">')
     for a, b, c in [("Code postal", "92700", "s"), ("Chef-lieu du département", "Nanterre", ""), ("Nom des habitants", "les Colombiens et les Colombiennes", ""),
                     ("Type de paysage", "urbain", ""), ("Types d’habitations", "des pavillons et des immeubles", ""), ("Petite, moyenne ou grande ville ?", "moyenne", "")]:
         h.append(f'<div class="field"><span>{a} :</span>{B(b, K, c)}</div>')
     h.append('</div></section>')
+
+    # 8 Missions
+    h.append('<section class="ex"><h2><span class="n">8</span>Qui s’en occupe ?<span class="pts">… / 2</span></h2>')
+    h.append('<p class="consigne">Coche la collectivité qui s’occupe de chaque mission.' + pts(K, "0,25 point par ligne") + '</p>')
+    miss = [("L’école primaire", 0), ("Les collèges", 1), ("Les lycées", 2), ("L’état civil (naissances, mariages)", 0),
+            ("Les routes et les transports du département", 1), ("Les transports régionaux", 2), ("La collecte des déchets", 0), ("L’action sociale et la santé", 1)]
+    h.append('<table class="grid"><tr><th style="text-align:left">Mission</th><th class="c">Commune</th><th class="c">Département</th><th class="c">Région</th></tr>'
+             + "".join(f'<tr><td>{m}</td>' + "".join(f'<td class="c">{box(K, j == k)}</td>' for j in range(3)) + '</tr>' for m, k in miss) + '</table>')
+    h.append('</section>')
+
+    # 9 France et Europe
+    h.append('<section class="ex"><h2><span class="n">9</span>Mon pays et l’Europe<span class="pts">… / 2</span></h2>')
+    h.append('<p class="consigne">Complète le texte avec les mots de la liste.' + pts(K, "0,25 point par mot") + '</p>')
+    h.append('<div class="bank">Égalité · président · Métropole · démocratie · République · l’Union européenne · 27 · Outre-Mer</div>')
+    h.append('<p class="texte">La France est constituée d’une ' + B("Métropole", K) + ' et de départements, régions et collectivités situés en ' + B("Outre-Mer", K) +
+             '. Sa devise est : Liberté, ' + B("Égalité", K) + ', Fraternité. Notre pays est une ' + B("République", K) + ' dirigée par un ' + B("président", K) +
+             ' élu par le peuple : c’est une ' + B("démocratie", K) + ', les citoyens participent par le vote. Certains pays d’Europe se sont regroupés pour former ' +
+             B("l’Union européenne", K) + ', avec ' + B("27", K, "s") + ' pays membres.</p>')
+    h.append('</section>')
+
+    # 10 Vocabulaire et nombres
+    h.append('<section class="ex"><h2><span class="n">10</span>Le vocabulaire et les nombres clés<span class="pts">… / 2</span></h2>')
+    h.append('<p class="consigne">Complète.' + pts(K, "0,25 point par case") + '</p><ol class="alpha">'
+             f'<li><span>a)</span><span>En France, une ville est une commune d’au moins {B("2 000", K, "s")} habitants. S’il y en a moins, on parle de {B("village", K)}.</span></li>'
+             f'<li><span>b)</span><span>Une commune est un territoire dirigé par un {B("maire", K)} et un {B("conseil municipal", K)}, élus pour {B("6", K, "s")} ans.</span></li>'
+             f'<li><span>c)</span><span>En France, il y a environ {B("36 000", K, "s")} communes, {B("101", K, "s")} départements et {B("18", K, "s")} régions.</span></li></ol>')
+    if K: h.append('<p class="bareme">Le cahier donne 36 000 communes : accepter aussi 35 000 (le chiffre actuel est d’environ 34 900).</p>')
+    h.append('</section>')
 
     if K:
         h.append('<section class="ex" style="margin-top:8px"><h2><span class="n">✓</span>Récapitulatif du barème<span class="pts">20</span></h2>'
