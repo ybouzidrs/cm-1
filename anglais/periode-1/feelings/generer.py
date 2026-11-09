@@ -16,6 +16,7 @@ CSS += """
 .sub { text-align: center; font-size: 13pt; margin: 4px 0 8px; font-style: italic; }
 """
 WORDS = ["happy", "sad", "tired", "hot", "cold", "angry", "scared", "thirsty", "hungry", "surprised", "proud", "so-so", "sleepy", "sick", "in love"]
+ORDER1 = [6, 12, 0, 10, 3, 8, 14, 1, 11, 4, 9, 2, 7, 13, 5]   # ordre mélangé pour l'exercice 1
 ORDER2 = [9, 4, 13, 0, 7, 11, 5, 14, 2, 8, 3, 12, 1, 10, 6]   # ordre mélangé pour l'exercice 2
 IMG = [ "data:image/png;base64," + base64.b64encode(open(os.path.join(HERE, "smileys", f"{i:02d}.png"), "rb").read()).decode() for i in range(15)]
 
@@ -35,7 +36,7 @@ def doc(K):
     h.append('<p class="consigne">Regarde chaque smiley et écris le sentiment en anglais.' + (' <span class="bareme">(1 point par mot ; 0,5 point si une seule lettre est fausse)</span>' if K else '') + '</p>')
     h.append('<div class="grid15">' + "".join(
         f'<div class="cell"><img src="{IMG[i]}" alt=""><div class="wline"><span>I am</span>'
-        + (f'<span class="blank filled ans">{WORDS[i]}</span>' if K else '<span class="blank"></span>') + '</div></div>' for i in range(15)) + '</div>')
+        + (f'<span class="blank filled ans">{WORDS[i]}</span>' if K else '<span class="blank"></span>') + '</div></div>' for i in ORDER1) + '</div>')
     h.append('</section>')
     # Page 2
     h.append('<div class="pagebreak"></div>')
