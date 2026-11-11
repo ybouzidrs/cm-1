@@ -7,3 +7,4 @@ Jeux de révision pour la classe.
 - [Anglais · Période 1 : bilan](anglais/periode-1/) : évaluation à imprimer (sujet + corrigé) et vidéo `anglais/periode-1/video/english-with-amy.mp4`
 - [Histoire · Période 1 : « Le temps des rois »](histoire/periode-1/) : évaluation à imprimer (sujet + corrigé)
 - [Français · Période 1 : grammaire, la ponctuation](francais/periode-1/) : évaluation à imprimer (sujet + corrigé)
+- [Mathématiques · Période 1 : les nombres décimaux](mathematiques/periode-1/) : évaluation à imprimer (sujet + corrigé)
