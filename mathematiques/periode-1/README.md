@@ -12,3 +12,7 @@ Contenu : fraction décimale → nombre décimal, décompositions, valeur des ch
 ## Fiche complémentaire : focus exercice 23
 
 Dans `evaluation-decimaux/` : `focus-ex23-exercices.pdf` et `focus-ex23-corrige.pdf` (2 pages chacun, sur 12), produits par `generer-focus.py`. Trois exercices pour ordonner des nombres décimaux (croissant, décroissant, problème de saut en longueur), chacun avec des questions où l'élève justifie ses comparaisons.
+
+## Évaluation 2 : les nombres décimaux
+
+Dossier `evaluation-decimaux-2/` : même structure que la première évaluation (pages 34 à 43, sur 20, 3 pages A4), avec d'autres nombres. Le focus sur l'exercice 23 ajoute deux questions de justification (l'erreur d'Emma : « 0,16 > 0,6 », et comparer 3,09 et 3,1).
