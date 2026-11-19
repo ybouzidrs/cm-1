@@ -20,23 +20,52 @@ table.tb td.ans { color: #c0392b; font-weight: 700; }
 .calc .blank { min-width: 150px; }
 .pb { margin-top: 8px; }
 .pb p { margin: 0 0 2px; }
+.poses { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+.pose { border: 1.5px solid #111; border-radius: 8px; padding: 6px 10px 8px; break-inside: avoid; }
+.pose .lab { font-weight: 700; margin-bottom: 4px; }
+.quad { background-image: linear-gradient(#bbb 1px, transparent 1px), linear-gradient(90deg, #bbb 1px, transparent 1px); background-size: 6mm 6mm; border: 1px solid #bbb; }
+table.mul { border-collapse: collapse; margin: 0 auto; font-family: "Courier New", monospace; font-size: 14pt; font-weight: 700; color: #c0392b; }
+table.mul td { width: 6mm; height: 6.5mm; text-align: center; padding: 0; }
+table.mul tr.bar td { border-top: 2px solid #111; }
+table.mul td.op { color: #111; }
+table.mul tr.given td { color: #111; }
 """
 def B(a, K, c=""): return f'<span class="blank filled ans">{a}</span>' if K else f'<span class="blank {c}"></span>'
 def pts(K, t): return f' <span class="bareme">({t})</span>' if K else ''
 def ans(K, t, n=2): return f'<div class="answer-box">{t}</div>' if K else '<div class="lines">' + '<div class="line"></div>' * n + '</div>'
 
+def sp(n): return f"{n:,}".replace(",", "\u202f")
+def posee(a, b):
+    """Multiplication posée avec produits partiels (convention CM1 : on écrit les 0 de décalage)."""
+    digs = [int(d) for d in str(b)][::-1]
+    parts = [a * d * 10 ** i for i, d in enumerate(digs)] if len(digs) > 1 else []
+    res = a * b
+    W = max(len(str(res)), len(str(a)), len(str(b)) + 1) + 1
+    def row(txt, cls="", op=""):
+        cells = [""] * (W - len(txt)) + list(txt)
+        if op: cells[0] = op
+        return f'<tr class="{cls}">' + "".join(f'<td class="{"op" if (op and i == 0) else ""}">{c}</td>' for i, c in enumerate(cells)) + '</tr>'
+    out = '<table class="mul">' + row(str(a), "given") + row(str(b), "given", "×")
+    if parts:
+        out += "".join(row(str(p), "bar" if i == 0 else "", "+" if i == len(parts) - 1 else "") for i, p in enumerate(parts))
+        out += row(str(res), "bar")
+    else:
+        out += row(str(res), "bar")
+    return out + '</table>'
+
 def doc(K):
-    h = [f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>{"Corrigé · " if K else ""}Évaluation de mathématiques · Multiplier par 10, 100, 20, 50, 500</title>'
+    h = [f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>{"Corrigé · " if K else ""}Évaluation de mathématiques · La multiplication</title>'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Lilita+One&display=swap">'
          f'<style>{CSS}</style>' + ('<style>body{font-size:10.5pt;line-height:1.38} .ex{margin-top:9px}</style>' if K else '') + '</head><body>']
-    h.append('<div class="head"><div><div class="theme">Mathématiques · Calcul · Multiplier par 10, 100, 20, 200, 50, 500… (pages 52-53)</div>')
+    h.append('<div class="head"><div><div class="theme">Mathématiques · Calcul · La multiplication : × 10, 100, 20, 50, 500… et multiplication posée</div>')
     h.append(f'<h1>{"Corrigé et barème &nbsp;<span class=tag>ENSEIGNANT</span>" if K else "Évaluation de mathématiques"}</h1>')
-    h.append('<div style="margin-top:6px;font-size:10.5pt">Réponses attendues en <b class="ans">rouge</b>. Le barème est indiqué à droite de chaque titre (total : 20 points).</div>' if K else '<div class="ident"><span>Prénom :</span><span>Date :</span></div>')
-    h.append('</div><div class="note"><small>Note</small><b>' + ('<em>20</em>' if K else '&nbsp;&nbsp;&nbsp;') + ' / 20</b></div></div>')
+    h.append('<div style="margin-top:6px;font-size:10.5pt">Réponses attendues en <b class="ans">rouge</b>. Le barème est indiqué à droite de chaque titre (total : 30 points). Pour une note sur 20 : note sur 30 × 2 ÷ 3 (exemple : 24/30 → 16/20).</div>' if K else '<div class="ident"><span>Prénom :</span><span>Date :</span></div>')
+    h.append('</div><div class="note"><small>Note</small><b>' + ('<em>30</em>' if K else '&nbsp;&nbsp;&nbsp;') + ' / 30</b></div></div>')
     comps = [("Je multiplie un nombre par 10 et par 100.", "1 · 2 · 3", "5"),
              ("Je multiplie un nombre par 20, 50, 200, 500… en décomposant le calcul.", "4 · 5 · 6 · 7", "9"),
              ("Je décompose une multiplication pour la calculer (× 21, × 51…).", "8", "2"),
-             ("Je résous des problèmes en utilisant ces multiplications.", "9", "4")]
+             ("Je résous des problèmes en utilisant ces multiplications.", "9", "4"),
+             ("Je pose et je calcule une multiplication par un nombre à un chiffre et à trois chiffres.", "10 · 11 · 12", "10")]
     if not K:
         h.append('<table class="comp"><tr><th style="text-align:left">Compétences évaluées</th><th>Exercices</th><th class="c">Acquis</th><th class="c">En cours</th><th class="c">Non acquis</th></tr>'
                  + "".join(f'<tr><td>{c}</td><td style="text-align:center">{e}</td><td class="c"></td><td class="c"></td><td class="c"></td></tr>' for c, e, _ in comps) + '</table>')
@@ -116,11 +145,41 @@ def doc(K):
         h.append(f'<div class="pb"><p>{q}</p>{ans(K, a, 3)}</div>')
     h.append('</section>')
 
+    # 10 posée 1 chiffre
+    h.append('<section class="ex"><h2><span class="n">10</span>Je pose la multiplication par un nombre à un chiffre<span class="pts">… / 4</span></h2>')
+    h.append('<p class="consigne">Pose et calcule chaque multiplication. N’oublie pas les retenues.' + pts(K, "1 point par multiplication juste ; 0,5 point si une seule erreur de calcul") + '</p>')
+    m1 = [(324, 6), (1205, 4), (878, 7), (2563, 9)]
+    h.append('<div class="poses">' + "".join(
+        f'<div class="pose"><div class="lab">{"abcd"[i]}) {sp(a)} × {b} = {B(sp(a*b), K, "s") if K else ""}</div>'
+        + (posee(a, b) if K else '<div class="quad" style="height:30mm"></div>') + '</div>' for i, (a, b) in enumerate(m1)) + '</div>')
+    h.append('</section>')
+
+    # 11 posée 3 chiffres
+    h.append('<section class="ex"><h2><span class="n">11</span>Je pose la multiplication par un nombre à trois chiffres<span class="pts">… / 4</span></h2>')
+    h.append('<p class="consigne">Pose et calcule chaque multiplication. Écris bien les 0 de décalage dans les lignes intermédiaires.' + pts(K, "2 points par multiplication : 1 point pour les produits intermédiaires, 1 point pour le résultat") + '</p>')
+    m3 = [(214, 132), (356, 205)]
+    h.append('<div class="poses">' + "".join(
+        f'<div class="pose"><div class="lab">{"ab"[i]}) {sp(a)} × {b} = {B(sp(a*b), K, "s") if K else ""}</div>'
+        + (posee(a, b) if K else '<div class="quad" style="height:48mm"></div>') + '</div>' for i, (a, b) in enumerate(m3)) + '</div>')
+    if K: h.append('<p class="bareme">Pour 356 × 205, la ligne des dizaines vaut 0 (356 × 0 dizaine) : accepter qu’elle soit écrite (0) ou sautée.</p>')
+    h.append('</section>')
+
+    # 12 problèmes posés
+    h.append('<section class="ex"><h2><span class="n">12</span>Problèmes : je pose l’opération<span class="pts">… / 2</span></h2>')
+    h.append('<p class="consigne">Pose l’opération sur le quadrillage, puis réponds par une phrase.' + pts(K, "1 point par problème : 0,5 point pour le calcul, 0,5 point pour la phrase") + '</p>')
+    pp = [("a) Une boîte contient 144 crayons. L’école commande 8 boîtes. Combien de crayons l’école reçoit-elle ?", 144, 8, "144 × 8 = 1 152 : l’école reçoit 1 152 crayons."),
+          ("b) Un avion transporte 186 passagers à chaque vol. Il fait 124 vols en un mois. Combien de passagers transporte-t-il en un mois ?", 186, 124, "186 × 124 = 23 064 : l’avion transporte 23 064 passagers en un mois.")]
+    h.append('<div class="poses">' + "".join(
+        f'<div class="pose"><div style="font-size:10.5pt;margin-bottom:4px">{q}</div>'
+        + (posee(a, b) + f'<div class="answer-box" style="margin-top:4px">{r}</div>' if K else f'<div class="quad" style="height:{30 if b < 10 else 46}mm"></div><div class="lines"><div class="line"></div></div>') + '</div>'
+        for q, a, b, r in pp) + '</div>')
+    h.append('</section>')
+
     if K:
-        h.append('<section class="ex" style="margin-top:8px"><h2><span class="n">✓</span>Récapitulatif du barème<span class="pts">20</span></h2>'
+        h.append('<section class="ex" style="margin-top:8px"><h2><span class="n">✓</span>Récapitulatif du barème<span class="pts">30</span></h2>'
                  '<table class="comp" style="font-size:9pt;margin-top:4px"><tr><th style="text-align:left">Compétence</th><th>Exercices</th><th>Points</th></tr>' +
                  "".join(f'<tr><td>{c}</td><td style="text-align:center">{e}</td><td style="text-align:center">{p}</td></tr>' for c, e, p in comps) +
-                 '</table><p class="bareme" style="margin-top:6px">Repère possible : compétence acquise si au moins 75 % des points, en cours entre 40 % et 75 %, non acquise en dessous.</p></section>')
+                 '</table><p class="bareme" style="margin-top:6px">Note sur 20 = note sur 30 × 2 ÷ 3. Repère possible : compétence acquise si au moins 75 % des points, en cours entre 40 % et 75 %, non acquise en dessous.</p></section>')
     else:
         h.append('<p class="foot">Relis bien tes réponses avant de rendre ta copie. Bon courage !</p>')
     h.append('</body></html>')

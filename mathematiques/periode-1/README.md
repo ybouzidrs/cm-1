@@ -19,4 +19,4 @@ Dossier `evaluation-decimaux-2/` : même structure que la première évaluation 
 
 ## Évaluation : multiplier par 10, 100, 20, 200, 50, 500… (pages 52-53)
 
-Dossier `evaluation-multiplication/` : sujet (2 pages A4) et corrigé (3 pages A4) séparés, notée sur 20. Multiplier par 10 et 100, la chaîne des multiplications, le nombre manquant, multiplier par 20, 50 et 500 en écrivant les étapes, calcul rapide, compléter les multiplications, le tableau × 50 / × 500, décomposer (× 21, × 31, × 51) et quatre problèmes.
+Dossier `evaluation-multiplication/` : sujet (3 pages A4) et corrigé (4 pages A4) séparés, notée sur 30 (note sur 20 = note sur 30 × 2 ÷ 3). Multiplier par 10 et 100, la chaîne des multiplications, le nombre manquant, multiplier par 20, 50 et 500 en écrivant les étapes, calcul rapide, compléter les multiplications, le tableau × 50 / × 500, décomposer (× 21, × 31, × 51), quatre problèmes, puis la multiplication posée par un nombre à un chiffre et à trois chiffres, avec deux problèmes.
